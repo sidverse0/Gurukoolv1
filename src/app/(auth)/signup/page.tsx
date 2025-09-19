@@ -36,8 +36,13 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Update the user's profile with their name
-      await updateProfile(user, { displayName: name });
+      const avatarUrl = `https://api.dicebear.com/8.x/bottts/svg?seed=${user.uid}`;
+
+      // Update the user's profile with their name and photo
+      await updateProfile(user, { 
+        displayName: name,
+        photoURL: avatarUrl
+      });
 
       // Create a document for the new user in Firestore
       await setDoc(doc(db, 'users', user.uid), {
@@ -45,7 +50,7 @@ export default function SignupPage() {
         email: user.email,
         displayName: name,
         createdAt: serverTimestamp(),
-        photoURL: '',
+        photoURL: avatarUrl,
       });
 
       toast({
