@@ -3,15 +3,13 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+  collection,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+} from 'firebase/firestore';
 import { Badge } from '@/components/ui/badge';
 import {
   History,
@@ -21,7 +19,8 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
 type Payment = {
   id: string;
@@ -38,23 +37,28 @@ type Payment = {
 const statusConfig = {
   successful: {
     icon: CheckCircle,
-    color: 'bg-green-500',
+    variant: 'successful',
     text: 'Successful',
-    variant: 'default',
+    className: 'border-green-500 text-green-600',
+    bgClassName: 'bg-green-100',
   },
   pending: {
     icon: AlertCircle,
-    color: 'bg-yellow-500',
-    text: 'Pending',
     variant: 'secondary',
+    text: 'Pending',
+    className: 'border-yellow-500 text-yellow-600',
+    bgClassName: 'bg-yellow-100',
+
   },
   failed: {
     icon: XCircle,
-    color: 'bg-red-500',
-    text: 'Failed',
     variant: 'destructive',
+    text: 'Failed',
+    className: 'border-red-500 text-red-600',
+    bgClassName: 'bg-red-100',
   },
 } as const;
+
 
 export default function HistoryPage() {
   const { user } = useAuth();
@@ -76,15 +80,15 @@ export default function HistoryPage() {
 
     const unsubscribe = onSnapshot(
       q,
-      (querySnapshot) => {
+      querySnapshot => {
         const paymentHistory: Payment[] = [];
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
           paymentHistory.push({ id: doc.id, ...doc.data() } as Payment);
         });
         setPayments(paymentHistory);
         setLoading(false);
       },
-      (error) => {
+      error => {
         console.error('Error fetching payment history:', error);
         setLoading(false);
       }
@@ -116,7 +120,7 @@ export default function HistoryPage() {
       </div>
     );
   }
-  
+
   const formatDate = (timestamp: { seconds: number; nanoseconds: number }) => {
     if (!timestamp) return 'N/A';
     const date = new Date(timestamp.seconds * 1000);
@@ -128,41 +132,48 @@ export default function HistoryPage() {
       <h1 className="mb-6 font-headline text-3xl font-bold tracking-tight md:text-4xl">
         Payment History
       </h1>
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Batch ID</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Remark</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {payments.map((payment) => {
-              const config = statusConfig[payment.status] || statusConfig.pending;
-              const Icon = config.icon;
-              return (
-                <TableRow key={payment.id}>
-                  <TableCell className="font-medium">{payment.batchId}</TableCell>
-                   <TableCell>₹{payment.price}</TableCell>
-                  <TableCell>
-                    <Badge variant={config.variant}>
-                      <Icon className="mr-2 h-4 w-4" />
-                      {config.text}
-                    </Badge>
-                  </TableCell>
-                  <TableCell title={formatDate(payment.submittedAt)}>
-                    {formatDistanceToNow(payment.submittedAt.seconds * 1000, { addSuffix: true })}
-                  </TableCell>
-                  <TableCell>{payment.remark || '-'}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </Card>
+      <div className="space-y-4">
+        {payments.map(payment => {
+          const config =
+            statusConfig[payment.status] || statusConfig.pending;
+          const Icon = config.icon;
+
+          return (
+            <Card key={payment.id} className={cn('overflow-hidden border-l-4', config.className)}>
+              <div className="flex">
+                <div className={cn('flex w-16 items-center justify-center', config.bgClassName)}>
+                   <Icon className={cn('h-8 w-8', config.className)} />
+                </div>
+                <div className="flex-1">
+                  <CardHeader className="p-4 pb-2">
+                    <div className="flex items-center justify-between">
+                       <CardTitle className="text-lg font-bold">{payment.batchId}</CardTitle>
+                       <p className="text-lg font-bold">₹{payment.price}</p>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                     <div className="flex items-center justify-between text-sm text-muted-foreground">
+                        <Badge variant={config.variant}>
+                          {config.text}
+                        </Badge>
+                        <p title={formatDate(payment.submittedAt)}>
+                          {formatDistanceToNow(payment.submittedAt.seconds * 1000, { addSuffix: true })}
+                        </p>
+                      </div>
+                  </CardContent>
+                  {payment.remark && (
+                    <CardFooter className="p-4 pt-0">
+                       <p className="text-xs text-muted-foreground">
+                         <strong>Remark:</strong> {payment.remark}
+                       </p>
+                    </CardFooter>
+                  )}
+                </div>
+              </div>
+            </Card>
+          );
+        })}
+      </div>
     </div>
   );
 }
