@@ -50,21 +50,25 @@ export function useFavorites() {
   };
 
   const addFavorite = useCallback(async (video: Video) => {
-    const newFavorites = [...favorites, video];
+    if (!user) return;
     setFavorites(prevFavorites => {
       if (prevFavorites.some(fav => fav.video_url === video.video_url)) {
         return prevFavorites;
       }
-      return [...prevFavorites, video];
+      const newFavorites = [...prevFavorites, video];
+      updateFirestoreFavorites(newFavorites);
+      return newFavorites;
     });
-    await updateFirestoreFavorites(newFavorites);
-  }, [favorites, user]);
+  }, [user]);
 
   const removeFavorite = useCallback(async (video: Video) => {
-    const newFavorites = favorites.filter(fav => fav.video_url !== video.video_url);
-    setFavorites(newFavorites);
-    await updateFirestore_Favorites(newFavorites);
-  }, [favorites, user]);
+    if (!user) return;
+    setFavorites(prevFavorites => {
+      const newFavorites = prevFavorites.filter(fav => fav.video_url !== video.video_url);
+      updateFirestoreFavorites(newFavorites);
+      return newFavorites;
+    });
+  }, [user]);
 
   const isFavorite = useCallback(
     (video: Video) => {

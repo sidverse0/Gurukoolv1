@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useFavorites } from '@/hooks/use-favorites';
 import { useAuth } from '@/contexts/auth-context';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function constructVideoUrl(video: Video) {
   const baseUrl = `/videos/${encodeURIComponent(
@@ -31,13 +32,26 @@ function constructVideoUrl(video: Video) {
   return baseUrl;
 }
 
+function VideoCardSkeleton() {
+  return (
+    <Card className="group overflow-hidden">
+      <Skeleton className="h-40 w-full" />
+      <CardHeader className="p-4">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4 mt-2" />
+        <Skeleton className="h-3 w-1/2 mt-1" />
+      </CardHeader>
+    </Card>
+  )
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const [continueLearningVideos, setContinueLearningVideos] = useState<Video[]>(
     []
   );
   const [loading, setLoading] = useState(true);
-  const { favorites } = useFavorites();
+  const { favorites, isLoaded: favoritesLoaded } = useFavorites();
 
   useEffect(() => {
     async function fetchContinueLearning() {
@@ -49,6 +63,8 @@ export default function HomePage() {
     }
     fetchContinueLearning();
   }, []);
+
+  const isLoading = loading || !favoritesLoaded;
 
   return (
     <div className="container mx-auto">
@@ -74,7 +90,13 @@ export default function HomePage() {
           <h2 className="mb-4 font-headline text-2xl font-semibold">
             My Favorites
           </h2>
-          {favorites.length > 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+            </div>
+          ) : favorites.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {favorites.map(video => (
                 <Card
@@ -136,7 +158,11 @@ export default function HomePage() {
             Continue Learning
           </h2>
           {loading ? (
-             <p>Loading...</p>
+             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+              <VideoCardSkeleton />
+            </div>
           ) : continueLearningVideos.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {continueLearningVideos.map(video => (

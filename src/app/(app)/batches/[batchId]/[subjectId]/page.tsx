@@ -124,7 +124,9 @@ export default function SubjectLecturesPage() {
     return baseUrl;
   };
   
-  const handleFavoriteClick = (video: Video) => {
+  const handleFavoriteClick = (e: React.MouseEvent, video: Video) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (isFavorite(video)) {
       removeFavorite(video);
     } else {
@@ -187,14 +189,14 @@ export default function SubjectLecturesPage() {
                         Play Video
                       </Link>
                     </Button>
-                    <Button variant="ghost" onClick={() => handleFavoriteClick(video)}>
+                    <Button variant="ghost" onClick={(e) => handleFavoriteClick(e, video)}>
                       <Heart
                         className={cn(
                           'mr-2 h-4 w-4',
                           favorite && 'fill-red-500 text-red-500'
                         )}
                       />
-                      Add to favorites
+                      {favorite ? 'Favorited' : 'Add to favorites'}
                     </Button>
                   </div>
                 </div>
