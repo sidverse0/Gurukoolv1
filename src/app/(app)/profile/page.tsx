@@ -34,10 +34,28 @@ export default function ProfilePage() {
     }
   };
   
-  const getInitials = (email: string | null | undefined) => {
-    if (!email) return 'GU';
-    return email.substring(0, 2).toUpperCase();
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return 'GU';
+    return name.substring(0, 2).toUpperCase();
   }
+
+  // A simple hashing function to create a 6-digit alphanumeric code from UID
+  const formatUid = (uid: string | undefined): string => {
+    if (!uid) return '******';
+    
+    let hash = 0;
+    for (let i = 0; i < uid.length; i++) {
+        const char = uid.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0; // Convert to 32bit integer
+    }
+
+    // Use a large prime number to mix the hash
+    const mixedHash = Math.abs(hash * 27700159);
+    
+    // Take modulo to fit in 6 characters (36^6) and convert to base 36
+    return mixedHash.toString(36).slice(0, 6).toUpperCase().padStart(6, '0');
+  };
 
   return (
     <div className="container mx-auto max-w-2xl">
@@ -53,13 +71,13 @@ export default function ProfilePage() {
                 src={`https://api.dicebear.com/8.x/bottts/svg?seed=${user?.uid}`}
                 data-ai-hint="person face"
               />
-              <AvatarFallback>{getInitials(user?.email)}</AvatarFallback>
+              <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
             </Avatar>
             <div>
               <CardTitle className="font-headline text-2xl">
-                {user?.displayName || user?.email || 'Guest User'}
+                {user?.displayName || user?.email?.split('@')[0] || 'Guest User'}
               </CardTitle>
-              <p className="text-muted-foreground">UID: {user?.uid}</p>
+              <p className="text-muted-foreground">UID: {formatUid(user?.uid)}</p>
             </div>
           </div>
         </CardHeader>
@@ -71,6 +89,7 @@ export default function ProfilePage() {
               </h3>
               <div className="mt-2 space-y-1 text-sm text-muted-foreground">
                  <p><strong>Email:</strong> {user?.email}</p>
+                 <p><strong>Full UID:</strong> {user?.uid}</p>
               </div>
             </div>
             <div>
