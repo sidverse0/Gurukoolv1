@@ -4,7 +4,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BookCopy, FileText, Home, Search, User } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 const links = [
@@ -17,16 +16,11 @@ const links = [
 
 export function BottomNav() {
   const pathname = usePathname();
-  const isMobile = useIsMobile();
-
-  if (!isMobile) {
-    return null;
-  }
 
   const mainLinks = links.slice(0, 5);
 
   return (
-    <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-background/95 backdrop-blur-sm md:hidden">
+    <div className="fixed bottom-0 left-0 z-40 w-full border-t bg-background/95 backdrop-blur-sm">
       <div className="grid h-16 grid-cols-5">
         {mainLinks.map(link => {
           const isActive = pathname.startsWith(link.href);

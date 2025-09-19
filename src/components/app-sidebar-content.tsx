@@ -9,7 +9,6 @@ import {
   Home,
   Search,
   User,
-  LayoutGrid,
 } from 'lucide-react';
 
 import {
@@ -18,6 +17,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Icons } from '@/components/icons';
 
@@ -31,13 +31,15 @@ const links = [
 
 export function AppSidebarContent() {
   const pathname = usePathname();
+  const { setOpen } = useSidebar();
 
   return (
     <>
-      <SidebarHeader className="p-4">
+      <SidebarHeader>
         <Link
           href="/home"
           className="flex items-center gap-2 text-foreground transition-colors hover:text-foreground/80"
+          onClick={() => setOpen(false)}
         >
           <Icons.Logo className="h-8 w-8 text-primary" />
           <span className="font-headline text-2xl font-semibold">
@@ -52,10 +54,11 @@ export function AppSidebarContent() {
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith(link.href)}
+                onClick={() => setOpen(false)}
               >
                 <Link href={link.href}>
-                  <link.icon className="h-5 w-5" />
-                  <span className="text-base">{link.label}</span>
+                  <link.icon />
+                  <span>{link.label}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
