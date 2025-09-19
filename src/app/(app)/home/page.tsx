@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -20,6 +21,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePurchases } from '@/hooks/use-purchases';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Badge } from '@/components/ui/badge';
 
 function constructVideoUrl(video: Video) {
   const baseUrl = `/videos/${encodeURIComponent(
@@ -50,14 +52,15 @@ function VideoCardSkeleton() {
 
 function BatchCardSkeleton() {
   return (
-    <Card className="group overflow-hidden">
-      <Skeleton className="h-40 w-full" />
-      <CardHeader className="p-4">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-3/4 mt-2" />
-      </CardHeader>
-    </Card>
-  )
+    <div className="flex flex-col space-y-3">
+      <Skeleton className="h-40 w-full rounded-lg" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+      </div>
+      <Skeleton className="h-10 w-full" />
+    </div>
+  );
 }
 
 export default function HomePage() {
@@ -97,6 +100,8 @@ export default function HomePage() {
   const getImage = (thumbnailId: string) => {
     return PlaceHolderImages.find(img => img.id === thumbnailId);
   };
+  
+  const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
 
   const isLoading = loading || !favoritesLoaded || !purchasesLoaded || loadingBatches;
 
@@ -131,44 +136,51 @@ export default function HomePage() {
               <BatchCardSkeleton />
             </div>
           ) : purchasedBatches.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {purchasedBatches.map(batch => {
                 const image = getImage(batch.thumbnailId);
+                const paid = isPaidBatch(batch);
                 return (
                 <Card
                   key={batch.id}
-                  className="group overflow-hidden transition-transform duration-300 hover:scale-105"
+                  className="group flex transform flex-col overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
                 >
-                  <div className="relative h-40 w-full">
-                    <Image
-                      src={image?.imageUrl || 'https://picsum.photos/seed/batch/600/400'}
-                      alt={batch.title}
-                      fill
-                      className="object-cover"
-                      data-ai-hint={image?.imageHint}
-                    />
-                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                     <div className="absolute bottom-2 left-2">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="h-8 bg-white/80 text-xs text-black backdrop-blur-sm hover:bg-white"
-                          asChild
-                        >
-                          <Link href={`/batches/${batch.id}`}>
-                            Let's Study <ArrowRight className="ml-1.5" />
-                          </Link>
-                        </Button>
+                   <div className="relative">
+                    {image && (
+                      <div className="relative h-40 w-full">
+                        <Image
+                          src={image.imageUrl}
+                          alt={batch.title}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={image.imageHint}
+                        />
                       </div>
+                    )}
+                    <div className="absolute left-2 top-2">
+                      {paid ? (
+                        <Badge variant="destructive" className="text-sm">Paid</Badge>
+                      ) : (
+                        <Badge className="text-sm">Free</Badge>
+                      )}
+                    </div>
                   </div>
-                  <CardHeader className="p-4">
-                    <CardTitle className="line-clamp-2 h-12 font-body text-base font-bold">
+
+                  <CardHeader className="pt-4 flex-grow">
+                    <CardTitle className="font-body text-lg font-bold">
                       {batch.title}
                     </CardTitle>
-                     {batch.instructor && (
-                      <CardDescription className='text-xs'>By {batch.instructor}</CardDescription>
+                    {batch.instructor && (
+                      <CardDescription>By {batch.instructor}</CardDescription>
                     )}
                   </CardHeader>
+                  <CardFooter>
+                    <Button asChild className="w-full">
+                      <Link href={`/batches/${batch.id}`}>
+                        Let's Study <ArrowRight className="ml-2" />
+                      </Link>
+                    </Button>
+                  </CardFooter>
                 </Card>
               )})}
             </div>
