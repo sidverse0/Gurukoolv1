@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   Clapperboard,
   FileText,
+  ImageIcon,
   Play,
   Search,
 } from 'lucide-react';
@@ -152,13 +153,17 @@ export default function SubjectLecturesPage() {
         {filteredVideos.map(video => (
           <Card key={video.serial} className="overflow-hidden">
             <div className="grid grid-cols-1 md:grid-cols-3">
-              <div className="relative h-48 md:h-full">
-                <Image
-                  src={video.thumbnail}
-                  alt={video.title}
-                  fill
-                  className="object-cover"
-                />
+              <div className="relative h-48 md:h-full bg-muted/30 flex items-center justify-center">
+                {video.thumbnail ? (
+                  <Image
+                    src={video.thumbnail}
+                    alt={video.title}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+                )}
               </div>
               <div className="p-4 md:col-span-2">
                 <p className="text-sm text-muted-foreground">
