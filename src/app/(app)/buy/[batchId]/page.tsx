@@ -15,6 +15,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -58,6 +64,8 @@ export default function BuyPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [utr, setUtr] = useState('');
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [submissionTime, setSubmissionTime] = useState<Date | null>(null);
   
   const batchPrice = '199';
 
@@ -98,6 +106,7 @@ export default function BuyPage() {
     setSubmitting(true);
     
     try {
+      const currentTime = new Date();
       const paymentRef = doc(db, 'payments', `${user.uid}_${batchId}`);
       await setDoc(paymentRef, {
         userId: user.uid,
@@ -108,11 +117,8 @@ export default function BuyPage() {
         submittedAt: serverTimestamp(),
       });
 
-      toast({
-        title: 'Payment Submitted!',
-        description: 'Your payment is being verified. You will be notified once it is confirmed.',
-      });
-      router.push('/batches');
+      setSubmissionTime(currentTime);
+      setShowReceipt(true);
 
     } catch (error) {
       console.error('Payment Submission Error:', error);
@@ -146,70 +152,103 @@ export default function BuyPage() {
     return notFound();
   }
 
+  const handleReceiptClose = () => {
+    setShowReceipt(false);
+    router.push('/batches');
+  }
+
   return (
-    <div className="container mx-auto max-w-md">
-       <div className="w-full">
-          <Button variant="ghost" asChild className="mb-4">
-            <Link href="/batches">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Batches
-            </Link>
-          </Button>
-        </div>
-      <form onSubmit={handlePaymentSubmit}>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="font-headline text-2xl">
-              {batchDetails.batch_info.title}
-            </CardTitle>
-            <CardDescription>
-              Complete the payment to get access to this batch.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-6">
-            <div className="flex flex-col items-center gap-4">
-              <div className="relative aspect-square w-full max-w-[250px] rounded-lg bg-muted p-4">
-                 <Image
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`}
-                  alt="Payment QR Code"
-                  width={250}
-                  height={250}
-                  className="rounded-md"
-                  data-ai-hint="qr code"
+    <>
+      <div className="container mx-auto max-w-md">
+         <div className="w-full">
+            <Button variant="ghost" asChild className="mb-4">
+              <Link href="/batches">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Batches
+              </Link>
+            </Button>
+          </div>
+        <form onSubmit={handlePaymentSubmit}>
+          <Card className="w-full">
+            <CardContent className="grid gap-6 pt-6">
+              <div className="flex flex-col items-center gap-4">
+                <div className="relative aspect-square w-full max-w-[250px] rounded-lg bg-muted p-4">
+                   <Image
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`}
+                    alt="Payment QR Code"
+                    width={250}
+                    height={250}
+                    className="rounded-md"
+                    data-ai-hint="qr code"
+                  />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">Scan to pay</p>
+                  <p className="font-headline text-3xl font-bold text-primary">
+                    ₹{batchPrice}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="utr">Enter UTR / Transaction ID</Label>
+                <Input
+                  id="utr"
+                  placeholder="12-digit transaction number"
+                  required
+                  value={utr}
+                  onChange={(e) => setUtr(e.target.value)}
+                  disabled={submitting}
                 />
               </div>
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">Scan to pay</p>
-                <p className="font-headline text-3xl font-bold text-primary">
-                  ₹{batchPrice}
-                </p>
+            </CardContent>
+            <CardFooter>
+              <Button type="submit" className="w-full" disabled={submitting}>
+                {submitting ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <CheckCircle />
+                )}
+                <span className="ml-2">{submitting ? 'Submitting...' : "I've Paid"}</span>
+              </Button>
+            </CardFooter>
+          </Card>
+        </form>
+      </div>
+
+       <Dialog open={showReceipt} onOpenChange={setShowReceipt}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center text-center">
+            <CheckCircle className="h-16 w-16 text-green-500" />
+            <DialogTitle className="font-headline text-2xl">Payment Submitted</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+             <div className="rounded-lg border bg-muted/50 p-4 space-y-3">
+              <h4 className="font-semibold text-center text-muted-foreground">RECEIPT</h4>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Batch:</span>
+                <span className="font-medium text-right">{batchDetails.batch_info.title}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Amount:</span>
+                <span className="font-medium">₹{batchPrice}</span>
+              </div>
+               <div className="flex justify-between">
+                <span className="text-muted-foreground">Transaction ID:</span>
+                <span className="font-medium">{utr}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Date & Time:</span>
+                <span className="font-medium text-right">{submissionTime?.toLocaleString()}</span>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="utr">Enter UTR / Transaction ID</Label>
-              <Input
-                id="utr"
-                placeholder="12-digit transaction number"
-                required
-                value={utr}
-                onChange={(e) => setUtr(e.target.value)}
-                disabled={submitting}
-              />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" className="w-full" disabled={submitting}>
-              {submitting ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <CheckCircle />
-              )}
-              <span className="ml-2">{submitting ? 'Submitting...' : "I've Paid"}</span>
-            </Button>
-          </CardFooter>
-        </Card>
-      </form>
-    </div>
+            <p className="text-xs text-center text-muted-foreground">
+              Your payment is under review. You will get access once verified.
+            </p>
+          </div>
+          <Button onClick={handleReceiptClose}>Okay</Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
