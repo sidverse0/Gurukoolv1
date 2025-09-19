@@ -103,6 +103,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       if (controlsTimeoutRef.current) {
         clearTimeout(controlsTimeoutRef.current);
       }
+      setPlaying(false);
     };
   }, []);
 
