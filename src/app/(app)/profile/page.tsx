@@ -17,7 +17,7 @@ export default function ProfilePage() {
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20 border-2 border-primary">
               <AvatarImage
-                src="https://picsum.photos/seed/user-avatar/200"
+                src="https://picsum.photos/seed/user-profile/200"
                 data-ai-hint="person face"
               />
               <AvatarFallback>GU</AvatarFallback>

@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 const links = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/batches', label: 'Batches', icon: BookCopy },
-  { href: '/search', label: 'AI Search', icon: BrainCircuit },
+  { href: '/search', label: 'AI Guruji', icon: BrainCircuit },
   { href: '/history',label: 'History', icon: History },
   { href: '/profile', label: 'Profile', icon: User },
 ];

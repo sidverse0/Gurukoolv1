@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { aiSearch, type AiSearchOutput } from '@/ai/flows/ai-search';
-import { BrainCircuit, Check, Loader2, Sparkles } from 'lucide-react';
+import { Check, Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const examplePrompts = [
   'Explain the theory of relativity',
@@ -49,16 +50,18 @@ export default function SearchPage() {
   return (
     <div className="container mx-auto max-w-3xl">
       <div className="flex flex-col items-center justify-center text-center">
-        <div className="relative mb-4">
-          <BrainCircuit className="h-16 w-16 text-primary" />
-          <Sparkles className="absolute -right-2 -top-2 h-6 w-6 text-accent" />
-        </div>
-        <h1 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-          AI-Powered Search
+        <Avatar className="h-24 w-24 border-4 border-primary/50 shadow-lg">
+          <AvatarImage
+            src="https://picsum.photos/seed/ai-guruji/200"
+            data-ai-hint="friendly robot"
+          />
+          <AvatarFallback>AI</AvatarFallback>
+        </Avatar>
+        <h1 className="mt-6 font-headline text-3xl font-bold tracking-tight md:text-4xl">
+          AI Guruji
         </h1>
         <p className="mt-2 max-w-md text-muted-foreground">
-          Ask anything, and our AI will provide a detailed summary and key
-          points to help you learn.
+          Aapke har sawaal ka jawab yahan milega. Poochiye kuch bhi!
         </p>
       </div>
 
@@ -82,7 +85,7 @@ export default function SearchPage() {
               <Sparkles className="h-5 w-5" />
             )}
             <span className="ml-2 hidden sm:inline">
-              {loading ? 'Thinking...' : 'Ask AI'}
+              {loading ? 'Soch Raha Hu...' : 'Poochhein'}
             </span>
           </Button>
         </div>
@@ -91,7 +94,7 @@ export default function SearchPage() {
       {!loading && !result && (
         <div>
           <h3 className="mb-4 text-center text-sm font-semibold text-muted-foreground">
-            TRY AN EXAMPLE
+            KUCHH EXAMPLE TRY KAREIN
           </h3>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {examplePrompts.map(prompt => (
@@ -116,7 +119,7 @@ export default function SearchPage() {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
           <p className="text-center text-muted-foreground">
-            AI is generating your answer, please wait...
+            AI Guruji aapke liye jawab taiyaar kar rahe hain, कृपया प्रतीक्षा करें...
           </p>
         </div>
       )}
