@@ -12,7 +12,6 @@ import {
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import {
   ArrowRight,
-  BookCopy,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -30,25 +29,31 @@ export default async function BatchesPage() {
       </h1>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {batches.map(batch => {
+        {batches.map((batch, index) => {
           const image = getImage(batch.thumbnailId);
           return (
             <Card
               key={batch.id}
-              className="flex transform flex-col overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+              className="group flex transform flex-col overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
             >
-              {image && (
-                <div className="relative h-40 w-full">
-                  <Image
-                    src={image.imageUrl}
-                    alt={batch.title}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={image.imageHint}
-                  />
+              <div className="relative">
+                {image && (
+                  <div className="relative h-40 w-full">
+                    <Image
+                      src={image.imageUrl}
+                      alt={batch.title}
+                      fill
+                      className="object-cover"
+                      data-ai-hint={image.imageHint}
+                    />
+                  </div>
+                )}
+                <div className="absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary/80 text-primary-foreground backdrop-blur-sm">
+                  <span className="text-lg font-bold">{index + 1}</span>
                 </div>
-              )}
-              <CardHeader>
+              </div>
+
+              <CardHeader className="pt-4">
                 <CardTitle className="font-body text-lg font-bold">
                   {batch.title}
                 </CardTitle>
