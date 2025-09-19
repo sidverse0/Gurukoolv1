@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import ReactPlayer from 'react-player/lazy';
 import {
   suggestVideoResolution,
   type SuggestVideoResolutionOutput,
@@ -9,16 +10,24 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from './ui/skeleton';
 
 interface VideoPlayerProps {
-  videoId: string;
+  videoUrl: string;
 }
 
-export function VideoPlayer({ videoId }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const [suggestion, setSuggestion] =
     useState<SuggestVideoResolutionOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasWindow, setHasWindow] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setHasWindow(true);
+    }
+  }, []);
 
   const handleSuggestResolution = async () => {
     setIsLoading(true);
@@ -41,14 +50,18 @@ export function VideoPlayer({ videoId }: VideoPlayerProps) {
 
   return (
     <div className="space-y-4">
-      <div className="aspect-video w-full overflow-hidden rounded-lg border">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-          className="h-full w-full"
-        ></iframe>
+      <div className="aspect-video w-full overflow-hidden rounded-lg border bg-black">
+        {hasWindow ? (
+          <ReactPlayer
+            url={videoUrl}
+            controls
+            width="100%"
+            height="100%"
+            playing
+          />
+        ) : (
+          <Skeleton className="h-full w-full" />
+        )}
       </div>
       <div>
         <Button onClick={handleSuggestResolution} disabled={isLoading}>
