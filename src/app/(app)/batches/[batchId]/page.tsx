@@ -90,21 +90,31 @@ export default async function BatchDetailsPage({
                   </Dialog>
                 ))}
                 {subject.notes.map(note => (
-                  <a
-                    key={note.title}
-                    href={note.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-secondary"
-                  >
-                    <div className="flex items-center gap-4">
-                      <FileText className="h-5 w-5 text-accent" />
-                      <p className="font-medium">{note.title}</p>
-                    </div>
-                    <span className="text-sm font-medium text-accent">
-                      View PDF
-                    </span>
-                  </a>
+                   <Dialog key={note.title}>
+                   <DialogTrigger asChild>
+                     <div
+                       className="flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors hover:bg-secondary"
+                     >
+                       <div className="flex items-center gap-4">
+                         <FileText className="h-5 w-5 text-accent" />
+                         <p className="font-medium">{note.title}</p>
+                       </div>
+                       <span className="text-sm font-medium text-accent">
+                         View PDF
+                       </span>
+                     </div>
+                   </DialogTrigger>
+                   <DialogContent className="h-screen max-h-[95vh] w-screen max-w-[95vw] p-0">
+                     <DialogHeader className="p-4">
+                       <DialogTitle className="font-headline">
+                         {note.title}
+                       </DialogTitle>
+                     </DialogHeader>
+                     <div className="h-full w-full flex-1">
+                        <iframe src={note.url} className="h-full w-full border-0" />
+                     </div>
+                   </DialogContent>
+                 </Dialog>
                 ))}
               </div>
             </AccordionContent>
