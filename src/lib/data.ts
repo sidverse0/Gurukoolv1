@@ -5,6 +5,7 @@ import BPSC_70_DATA from '@/data/bpsc70.json';
 import ETHICS_DATA from '@/data/ethics.json';
 import BPSC_MENTORSHIP_566_DATA from '@/data/bpsc-mentorship-566.json';
 import BPSC_PRELIMS_419_DATA from '@/data/bpsc-prelims-419.json';
+import SUBJECT_3592_DATA from '@/data/subject-3592.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -12,6 +13,10 @@ const localBatchData: { [key: string]: any } = {
   'ethics': ETHICS_DATA,
   'bpsc-mentorship-566': BPSC_MENTORSHIP_566_DATA,
   'bpsc-prelims-419': BPSC_PRELIMS_419_DATA,
+};
+
+const localSubjectData: { [key: string]: any } = {
+  '3592': SUBJECT_3592_DATA,
 };
 
 async function fetchJsonData(url: string): Promise<any> {
@@ -61,7 +66,11 @@ export async function getBatches(): Promise<Batch[]> {
     })
   );
 
-  return enrichedBatches;
+  return enrichedBatches.sort((a, b) => {
+    const aIndex = BATCHES.findIndex(batch => batch.id === a.id);
+    const bIndex = BATCHES.findIndex(batch => batch.id === b.id);
+    return aIndex - bIndex;
+  });
 }
 
 
@@ -96,12 +105,16 @@ export async function getSubjectLectures(
   batchId: string,
   subjectId: string
 ): Promise<SubjectLectures | null> {
+  if (localSubjectData[subjectId]) {
+    return localSubjectData[subjectId] as SubjectLectures;
+  }
+  
   // First, get the batch details to find the subject's jsonUrl
   const batchDetails = await getBatchDetails(batchId);
   const subjectInfo = batchDetails?.subjects.find(s => String(s.id) === subjectId);
 
   if (!subjectInfo || !subjectInfo.jsonUrl) {
-    console.error(`Subject or jsonUrl not found for batchId: ${batchId}, subjectId: ${subjectId}`);
+    console.warn(`Subject or jsonUrl not found for batchId: ${batchId}, subjectId: ${subjectId}`);
     // Return a default structure to avoid breaking the page
     return {
       subject_name: subjectInfo?.name || "Unknown Subject",
@@ -127,3 +140,4 @@ export async function getSubjectLectures(
     videos: [],
   };
 }
+    
