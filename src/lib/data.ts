@@ -1,29 +1,43 @@
-import fs from 'fs/promises';
-import path from 'path';
 import type { Batch, SubjectDetails } from '@/lib/types';
-
-const dataPath = path.join(process.cwd(), 'src', 'data');
+import { BATCHES } from '@/config';
 
 export async function getBatches(): Promise<Batch[]> {
-  const filePath = path.join(dataPath, 'batches.json');
-  try {
-    const jsonData = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(jsonData);
-  } catch (error) {
-    console.error(`Could not read batches.json`, error);
-    return [];
-  }
+  return BATCHES.map(b => ({
+    id: b.id,
+    title: b.name,
+    description: ``,
+    instructor: '',
+    thumbnailId: `${b.id}-thumb`,
+    jsonUrl: b.jsonUrl,
+  }));
 }
 
 export async function getBatchDetails(
   batchId: string
 ): Promise<SubjectDetails | null> {
-  const filePath = path.join(dataPath, `${batchId}.json`);
+  const batch = BATCHES.find(b => b.id === batchId);
+  if (!batch || !batch.jsonUrl || batch.jsonUrl.includes('FILE_ID')) {
+    // Return a dummy structure if the URL is a placeholder
+    const allBatches = await getBatches();
+    const currentBatch = allBatches.find(b => b.id === batchId);
+    return {
+      batchId,
+      title: currentBatch?.title || 'Unknown Batch',
+      subjects: [],
+    };
+  }
+
   try {
-    const jsonData = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(jsonData);
+    const response = await fetch(batch.jsonUrl);
+    if (!response.ok) {
+      console.error(
+        `Failed to fetch batch details for ${batchId} from ${batch.jsonUrl}`
+      );
+      return null;
+    }
+    return await response.json();
   } catch (error) {
-    // This is expected if a file doesn't exist, so we don't need to log an error.
+    console.error(`Could not fetch batch details for ${batchId}`, error);
     return null;
   }
 }

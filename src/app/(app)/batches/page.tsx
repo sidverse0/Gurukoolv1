@@ -49,7 +49,9 @@ export default async function BatchesPage() {
                 <CardTitle className="font-headline text-xl">
                   {batch.title}
                 </CardTitle>
-                <CardDescription>By {batch.instructor}</CardDescription>
+                {batch.instructor && (
+                  <CardDescription>By {batch.instructor}</CardDescription>
+                )}
               </CardHeader>
               <CardContent className="flex-grow">
                 <p className="text-sm text-muted-foreground">

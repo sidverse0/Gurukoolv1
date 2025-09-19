@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -23,6 +24,18 @@
       "description": "Thumbnail for CSS Mastery course",
       "imageUrl": "https://picsum.photos/seed/cssmaster/600/400",
       "imageHint": "web design"
+    },
+    {
+      "id": "bpsc70-thumb",
+      "description": "Thumbnail for 70th BPSC Mains course",
+      "imageUrl": "https://picsum.photos/seed/bpsc70/600/400",
+      "imageHint": "government building"
+    },
+    {
+      "id": "ethics-thumb",
+      "description": "Thumbnail for Ethics course",
+      "imageUrl": "https://picsum.photos/seed/ethics/600/400",
+      "imageHint": "philosophy statue"
     }
   ]
 }

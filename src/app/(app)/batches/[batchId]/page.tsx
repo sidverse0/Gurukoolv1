@@ -45,6 +45,19 @@ export default async function BatchDetailsPage({
         Start your learning journey with the modules below.
       </p>
 
+      {batchDetails.subjects.length === 0 && (
+        <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
+          <Clapperboard className="h-12 w-12 text-muted-foreground" />
+          <h2 className="mt-6 font-headline text-xl font-semibold">
+            Content Coming Soon
+          </h2>
+          <p className="mt-2 text-muted-foreground">
+            The curriculum for this batch is being finalized. Please check back
+            later.
+          </p>
+        </div>
+      )}
+
       <Accordion type="single" collapsible className="w-full">
         {batchDetails.subjects.map(subject => (
           <AccordionItem key={subject.id} value={subject.id}>
