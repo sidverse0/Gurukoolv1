@@ -48,3 +48,5 @@ export interface SubjectLectures {
   note_count: number;
   videos: Video[];
 }
+
+    

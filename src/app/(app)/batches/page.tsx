@@ -7,13 +7,20 @@ import { getBatches } from '@/lib/data';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, BookCopy, Search, Lock } from 'lucide-react';
+import {
+  ArrowRight,
+  BookCopy,
+  Search,
+  Lock,
+  Users,
+  Clapperboard,
+  FileText,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import type { Batch } from '@/lib/types';
@@ -29,11 +36,44 @@ function BatchCardSkeleton() {
       <div className="space-y-2">
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-2/3" />
       </div>
       <Skeleton className="h-10 w-full" />
     </div>
   );
 }
+
+function BuysCounter({ batchId }: { batchId: string }) {
+  const [buys, setBuys] = useState(0);
+
+  useEffect(() => {
+    // Generate a consistent "random" starting number based on the batch ID
+    const seed = batchId.charCodeAt(0) + (batchId.charCodeAt(1) || 0);
+    const startBuys = 13000 + (seed % 5000);
+    setBuys(startBuys);
+
+    const interval = setInterval(() => {
+      setBuys(prevBuys => prevBuys + Math.floor(Math.random() * 3) + 1);
+    }, 60000); // Update every 1 minute
+
+    return () => clearInterval(interval);
+  }, [batchId]);
+
+  if (buys === 0) {
+    return null;
+  }
+
+  return (
+    <Badge
+      variant="destructive"
+      className="absolute right-2 top-2 animate-pulse"
+    >
+      <Users className="mr-1.5 h-3 w-3" />
+      {buys.toLocaleString()}+ Buys
+    </Badge>
+  );
+}
+
 
 export default function BatchesPage() {
   const [allBatches, setAllBatches] = useState<Batch[]>([]);
@@ -55,7 +95,6 @@ export default function BatchesPage() {
   useEffect(() => {
     if (!purchasesLoaded) return;
 
-    // Filter out purchased batches from the main list
     const availableBatches = allBatches.filter(
       batch => !purchasedBatchIds.includes(batch.id)
     );
@@ -110,9 +149,11 @@ export default function BatchesPage() {
         </div>
       ) : filteredBatches.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredBatches.map((batch, index) => {
+          {filteredBatches.map((batch) => {
             const image = getImage(batch.thumbnailId);
             const paid = isPaidBatch(batch);
+            const totalLectures = batch.subjects.reduce((sum, s) => sum + s.video_count, 0);
+            const totalNotes = batch.subjects.reduce((sum, s) => sum + s.note_count, 0);
             
             return (
               <Card
@@ -131,40 +172,52 @@ export default function BatchesPage() {
                       />
                     </div>
                   )}
-                   <div className="absolute left-2 top-2">
+                  <div className="absolute left-2 top-2">
                     {paid ? (
-                      <Badge variant="destructive" className="text-sm">Paid</Badge>
+                      <Badge variant="secondary" className="text-sm">Paid</Badge>
                     ) : (
                       <Badge className="text-sm">Free</Badge>
                     )}
                   </div>
+                  {paid && <BuysCounter batchId={batch.id} />}
                 </div>
 
-                <CardHeader className="pt-4">
+                <CardHeader className="pt-4 flex-grow">
                   <CardTitle className="font-body text-lg font-bold">
                     {batch.title}
                   </CardTitle>
-                  {batch.instructor && (
-                    <CardDescription>By {batch.instructor}</CardDescription>
-                  )}
-                </CardHeader>
-                <CardContent className="flex-grow space-y-4">
-                   {paid && (
-                    <div className="flex items-baseline justify-center">
-                      <span className="font-headline text-4xl font-bold tracking-tight text-primary">
-                        ₹{batchPrice}
-                      </span>
+                   <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                    <div className="flex items-center">
+                      <Clapperboard className="mr-1.5 h-4 w-4" />
+                      <span>{totalLectures} Lectures</span>
                     </div>
+                    <div className="flex items-center">
+                      <FileText className="mr-1.5 h-4 w-4" />
+                      <span>{totalNotes} Notes</span>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  {batch.instructor && (
+                    <p className="text-sm text-muted-foreground">By {batch.instructor}</p>
                   )}
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex-col items-start p-4">
                   {paid ? (
-                     <Button asChild className="w-full">
-                        <Link href={`/buy/${batch.id}`}>
-                          <Lock className="mr-2" />
-                           Buy Now
-                        </Link>
-                      </Button>
+                     <div className="w-full space-y-4">
+                      <div className='w-full h-px bg-border' />
+                      <div className="flex w-full items-center justify-between">
+                          <p className="font-headline text-2xl font-bold text-primary">
+                            ₹{batchPrice}
+                          </p>
+                          <Button asChild>
+                            <Link href={`/buy/${batch.id}`}>
+                              <Lock className="mr-2" />
+                              Buy Now
+                            </Link>
+                          </Button>
+                      </div>
+                     </div>
                   ) : (
                      <Button asChild className="w-full">
                         <Link href={`/batches/${batch.id}`}>
@@ -193,3 +246,5 @@ export default function BatchesPage() {
     </div>
   );
 }
+
+    
