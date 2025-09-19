@@ -93,11 +93,8 @@ export default function BatchesPage() {
   }, []);
 
   useEffect(() => {
-    if (!purchasesLoaded) return;
-
-    const availableBatches = allBatches.filter(
-      batch => !purchasedBatchIds.includes(batch.id)
-    );
+    // Show all batches, ignoring purchase status
+    const availableBatches = allBatches;
 
     if (searchTerm === '') {
       setFilteredBatches(availableBatches);
@@ -112,13 +109,14 @@ export default function BatchesPage() {
           batch.instructor.toLowerCase().includes(lowercasedFilter))
     );
     setFilteredBatches(filtered);
-  }, [searchTerm, allBatches, purchasedBatchIds, purchasesLoaded]);
+  }, [searchTerm, allBatches]);
 
   const getImage = (thumbnailId: string) => {
     return PlaceHolderImages.find(img => img.id === thumbnailId);
   };
 
   const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
+  const isPurchased = (batchId: string) => purchasedBatchIds.includes(batchId);
   const batchPrice = '199';
 
   const isLoading = loading || !purchasesLoaded;
@@ -152,6 +150,7 @@ export default function BatchesPage() {
           {filteredBatches.map((batch) => {
             const image = getImage(batch.thumbnailId);
             const paid = isPaidBatch(batch);
+            const purchased = isPurchased(batch.id);
             const totalLectures = batch.subjects.reduce((sum, s) => sum + s.video_count, 0);
             const totalNotes = batch.subjects.reduce((sum, s) => sum + s.note_count, 0);
             
@@ -204,7 +203,7 @@ export default function BatchesPage() {
                 </CardContent>
                 <CardFooter className="flex-col items-start p-4 pt-0">
                    <div className="w-full h-px bg-border mb-4" />
-                  {paid ? (
+                  {paid && !purchased ? (
                      <div className="w-full space-y-4">
                       <div className="flex w-full items-center justify-between">
                           <p className="font-headline text-2xl font-bold text-primary">
@@ -234,12 +233,12 @@ export default function BatchesPage() {
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
           <BookCopy className="h-12 w-12 text-muted-foreground" />
           <h2 className="mt-6 font-headline text-xl font-semibold">
-            {searchTerm ? 'No Batches Found' : 'All Batches Purchased!'}
+            {searchTerm ? 'No Batches Found' : 'No Batches Available'}
           </h2>
           <p className="mt-2 text-muted-foreground">
             {searchTerm
               ? `Your search for "${searchTerm}" did not match any available batches.`
-              : 'You have access to all available batches.'}
+              : 'Please check back later for new batches.'}
           </p>
         </div>
       )}
