@@ -58,7 +58,7 @@ export default async function BatchDetailsPage({
         </div>
       )}
 
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="single" collapsible className="w-full" defaultValue={batchDetails.subjects.length > 0 ? batchDetails.subjects[0].id : undefined}>
         {batchDetails.subjects.map(subject => (
           <AccordionItem key={subject.id} value={subject.id}>
             <AccordionTrigger className="font-headline text-lg hover:no-underline">
