@@ -5,9 +5,7 @@ export interface Batch {
   instructor: string;
   thumbnailId: string;
   jsonUrl: string;
-  subjects?: Subject[];
-  videoCount?: number;
-  noteCount?: number;
+  subjects: Subject[];
 }
 
 export interface Video {
@@ -26,13 +24,26 @@ export interface Note {
 }
 
 export interface Subject {
-  id: string;
-  title: string;
-  videos: Video[];
-  notes: Note[];
+  name: string;
+  id: number;
+  video_count: number;
+  note_count: number;
+  jsonUrl: string; // URL to fetch detailed lecture list for this subject
 }
 
-export interface SubjectDetails {
+export interface BatchInfo {
+  title: string;
+  id: string;
+  extracted_date?: string;
+}
+
+export interface BatchDetails {
+  batch_info: BatchInfo;
+  subjects: Subject[];
+}
+
+// This represents the detailed data for a single subject's lectures
+export interface SubjectLectures {
   subject_name: string;
   subject_id: number;
   video_count: number;

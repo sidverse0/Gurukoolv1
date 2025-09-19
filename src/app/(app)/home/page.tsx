@@ -1,76 +1,52 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { getBatches } from '@/lib/data';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Film, Star } from 'lucide-react';
 
 export default async function HomePage() {
-  const batches = await getBatches();
-
-  const getImage = (thumbnailId: string) => {
-    return PlaceHolderImages.find(img => img.id === thumbnailId);
-  };
-
   return (
     <div className="container mx-auto">
       <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
         Welcome Back!
       </h1>
       <p className="mb-8 text-muted-foreground">
-        Continue your learning journey. Here are the available batches.
+        Continue your learning journey.
       </p>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {batches.map(batch => {
-          const image = getImage(batch.thumbnailId);
-          return (
-            <Card
-              key={batch.id}
-              className="flex transform flex-col overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-            >
-              {image && (
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={image.imageUrl}
-                    alt={batch.title}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={image.imageHint}
-                  />
-                </div>
-              )}
-              <CardHeader>
-                <CardTitle className="font-headline text-xl">
-                  {batch.title}
-                </CardTitle>
-                {batch.instructor && (
-                  <CardDescription>By {batch.instructor}</CardDescription>
-                )}
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground">
-                  {batch.description}
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button asChild className="w-full">
-                  <Link href={`/batches/${batch.id}`}>
-                    View Batch <ArrowRight className="ml-2" />
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          );
-        })}
+      <div className="space-y-8">
+        <section>
+          <h2 className="mb-4 font-headline text-2xl font-semibold">
+            Recently Played
+          </h2>
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+              <Film className="h-12 w-12 text-muted-foreground" />
+              <h3 className="mt-6 font-semibold">No Recently Played Videos</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Start watching lectures and your history will appear here.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section>
+          <h2 className="mb-4 font-headline text-2xl font-semibold">
+            My Favourite Batches
+          </h2>
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+              <Star className="h-12 w-12 text-muted-foreground" />
+              <h3 className="mt-6 font-semibold">No Favourite Batches Yet</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Mark batches as favourites to see them here.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
       </div>
     </div>
   );
