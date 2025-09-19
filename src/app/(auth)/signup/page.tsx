@@ -31,6 +31,14 @@ export default function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (name.trim().length < 3) {
+      toast({
+        variant: 'destructive',
+        title: 'Invalid Name',
+        description: 'Name must be at least 3 characters long.',
+      });
+      return;
+    }
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -74,7 +82,7 @@ export default function SignupPage() {
       <form onSubmit={handleSignup}>
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
-            <Icons.Logo className="h-12 w-12 text-primary" />
+            <Icons.Logo className="h-14 w-14" />
           </div>
           <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
           <CardDescription>

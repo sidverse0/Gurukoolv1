@@ -53,7 +53,7 @@ export default function LoginPage() {
       <form onSubmit={handleLogin}>
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
-            <Icons.Logo className="h-12 w-12 text-primary" />
+            <Icons.Logo className="h-14 w-14" />
           </div>
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
           <CardDescription>

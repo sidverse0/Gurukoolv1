@@ -1,17 +1,25 @@
 import type { SVGProps } from 'react';
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 export const Icons = {
   Logo: (props: SVGProps<SVGSVGElement>) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 256 256"
-      {...props}
-      className="h-6 w-6"
+    <div
+      className={cn(
+        'relative flex h-8 w-8 items-center justify-center rounded-full',
+        props.className
+      )}
+      style={{
+        boxShadow: '0 0 10px hsl(var(--primary)), 0 0 5px hsl(var(--primary))',
+      }}
     >
-      <path
-        fill="currentColor"
-        d="M240 128a15.77 15.77 0 0 1-10.5 14.94l-151 79.25A16 16 0 0 1 56 208V48a16 16 0 0 1 22.5-14.19l151 79.25A15.77 15.77 0 0 1 240 128Z"
-      ></path>
-    </svg>
+      <Image
+        src="https://files.catbox.moe/039z22.png"
+        alt="GuruKool Logo"
+        width={32}
+        height={32}
+        className="rounded-full"
+      />
+    </div>
   ),
 };
