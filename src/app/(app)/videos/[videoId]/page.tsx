@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import {
   useSearchParams,
   useParams,
@@ -26,22 +26,56 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import type { Video } from '@/lib/types';
+import { useWatchHistory } from '@/hooks/use-watch-history';
+
 
 function VideoPlayerContent() {
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
+  const { addToHistory } = useWatchHistory();
 
   const videoId = params.videoId as string;
-  const title = searchParams.get('title');
-  const date = searchParams.get('date');
-  const noteUrl = searchParams.get('noteUrl');
-  const noteTitle = searchParams.get('noteTitle');
+  const videoDataString = searchParams.get('videoData');
+  
+  let video: Video | null = null;
+  try {
+    if (videoDataString) {
+      video = JSON.parse(decodeURIComponent(videoDataString));
+    }
+  } catch (e) {
+    console.error("Failed to parse video data", e);
+  }
 
-  const videoUrl = decodeURIComponent(videoId);
+  useEffect(() => {
+    if (video) {
+      addToHistory(video);
+    }
+  }, [video, addToHistory]);
 
-  if (!videoUrl) {
-    return notFound();
+  if (!video) {
+    // Fallback if videoData is not available
+    const title = searchParams.get('title');
+    const date = searchParams.get('date');
+    const noteUrl = searchParams.get('noteUrl');
+    const noteTitle = searchParams.get('noteTitle');
+
+    const decodedVideoUrl = decodeURIComponent(videoId);
+
+    if (!decodedVideoUrl) {
+      return notFound();
+    }
+    // Reconstruct a partial video object for display
+    video = {
+      video_url: decodedVideoUrl,
+      title: title ? decodeURIComponent(title) : 'Untitled Video',
+      published_date: date ? decodeURIComponent(date) : '',
+      notes: noteUrl ? [{ url: decodeURIComponent(noteUrl), title: noteTitle ? decodeURIComponent(noteTitle) : 'Notes' }] : [],
+      serial: 0,
+      hd_video_url: '',
+      thumbnail: '',
+    }
   }
 
   return (
@@ -52,15 +86,15 @@ function VideoPlayerContent() {
       </Button>
 
       <div className="space-y-4">
-        <VideoPlayer videoUrl={videoUrl} />
+        <VideoPlayer videoUrl={video.video_url} />
         <div className="space-y-4">
           <div>
             <h1 className="font-headline text-2xl font-bold tracking-tight md:text-3xl">
-              {title ? decodeURIComponent(title) : 'Untitled Video'}
+              {video.title}
             </h1>
-            {date && (
+            {video.published_date && (
               <p className="mt-1 text-muted-foreground">
-                Published on {decodeURIComponent(date)}
+                Published on {video.published_date}
               </p>
             )}
           </div>
@@ -78,7 +112,7 @@ function VideoPlayerContent() {
               <Star className="mr-2" />
               Rate
             </Button>
-            {noteUrl ? (
+            {video.notes && video.notes.length > 0 ? (
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="ghost" className="text-muted-foreground">
@@ -89,20 +123,14 @@ function VideoPlayerContent() {
                 <DialogContent className="h-screen max-h-[95svh] w-screen max-w-[95vw] flex flex-col p-0">
                   <DialogHeader className="p-4 border-b">
                     <DialogTitle className="font-headline">
-                      {noteTitle
-                        ? decodeURIComponent(noteTitle)
-                        : 'Lecture Notes'}
+                      {video.notes[0].title}
                     </DialogTitle>
                   </DialogHeader>
                   <div className="flex-1">
                     <iframe
-                      src={decodeURIComponent(noteUrl)}
+                      src={video.notes[0].url}
                       className="h-full w-full border-0"
-                      title={
-                        noteTitle
-                          ? decodeURIComponent(noteTitle)
-                          : 'Lecture Notes'
-                      }
+                      title={video.notes[0].title}
                     />
                   </div>
                 </DialogContent>

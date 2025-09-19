@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -111,16 +112,10 @@ export default function SubjectLecturesPage() {
   }
 
   const constructVideoUrl = (video: Video) => {
+    const videoObjectString = encodeURIComponent(JSON.stringify(video));
     const baseUrl = `/videos/${encodeURIComponent(
       video.video_url
-    )}?title=${encodeURIComponent(video.title)}&date=${encodeURIComponent(
-      video.published_date
-    )}`;
-    if (video.notes && video.notes.length > 0) {
-      return `${baseUrl}&noteUrl=${encodeURIComponent(
-        video.notes[0].url
-      )}&noteTitle=${encodeURIComponent(video.notes[0].title)}`;
-    }
+    )}?videoData=${videoObjectString}`;
     return baseUrl;
   };
   
