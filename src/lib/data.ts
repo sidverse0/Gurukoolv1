@@ -5,7 +5,7 @@ import BPSC_70_DATA from '@/data/bpsc70.json';
 import ETHICS_DATA from '@/data/ethics.json';
 import BPSC_MENTORSHIP_566_DATA from '@/data/bpsc-mentorship-566.json';
 import BPSC_PRELIMS_419_DATA from '@/data/bpsc-prelims-419.json';
-import SUBJECT_3592_DATA from '@/data/subject-3592.json';
+import SUBJECT_7429_DATA from '@/data/subject-7429.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -16,7 +16,7 @@ const localBatchData: { [key: string]: any } = {
 };
 
 const localSubjectData: { [key: string]: any } = {
-  '3592': SUBJECT_3592_DATA,
+  '7429': SUBJECT_7429_DATA,
 };
 
 async function fetchJsonData(url: string): Promise<any> {
