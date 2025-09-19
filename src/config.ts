@@ -28,5 +28,8 @@ export const BATCHES = [
   },
   {
     id: 'bpsc-72-709',
-  }
+  },
+  {
+    id: 'neet-2025-305',
+  },
 ];

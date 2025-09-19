@@ -83,6 +83,12 @@
       "description": "Thumbnail for 72nd BPSC Foundation Batch VI (Online)",
       "imageUrl": "https://picsum.photos/seed/bpsc72-7/600/400",
       "imageHint": "government building"
+    },
+    {
+      "id": "neet-2025-305-thumb",
+      "description": "Thumbnail for NEET 2025 Achiever/Dropper Batch",
+      "imageUrl": "https://picsum.photos/seed/neet2025/600/400",
+      "imageHint": "medical science"
     }
   ]
 }
