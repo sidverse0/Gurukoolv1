@@ -73,12 +73,22 @@ function VideoPlayerContent() {
     }
   }
 
-  const videoUrlToPlay = (quality === 'hd' && video.hd_video_url) ? video.hd_video_url : video.video_url;
+  // Logic:
+  // 1. If quality is 'hd' and hd_video_url exists, play HD.
+  // 2. If video_url exists, play it.
+  // 3. If video_url doesn't exist but hd_video_url does, play HD.
+  // 4. Otherwise, no valid URL.
+  const videoUrlToPlay = 
+    (quality === 'hd' && video.hd_video_url) 
+    ? video.hd_video_url 
+    : video.video_url 
+    ? video.video_url
+    : video.hd_video_url;
 
   const constructHdUrl = () => {
     const videoObjectString = encodeURIComponent(JSON.stringify(video));
     const baseUrl = `/videos/${encodeURIComponent(
-      video!.video_url
+      video!.video_url || video!.hd_video_url
     )}?videoData=${videoObjectString}&quality=hd`;
     return baseUrl;
   };
@@ -150,13 +160,18 @@ function VideoPlayerContent() {
                 Notes
               </Button>
             )}
-             {video.hd_video_url && (
+             {video.hd_video_url ? (
                <Button asChild variant="ghost" className="text-muted-foreground">
                 <Link href={constructHdUrl()}>
                   <Youtube className="mr-2" />
                   Watch in HD
                 </Link>
               </Button>
+            ) : (
+               <Button variant="ghost" className="text-muted-foreground" disabled>
+                  <Youtube className="mr-2" />
+                  HD Not Available
+                </Button>
             )}
           </div>
         </div>
