@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   Clapperboard,
   FileText,
+  Heart,
   ImageIcon,
   Play,
   Search,
@@ -171,6 +172,10 @@ export default function SubjectLecturesPage() {
                       <Play className="mr-2 h-4 w-4" />
                       Play Video
                     </Link>
+                  </Button>
+                  <Button variant="ghost">
+                    <Heart className="mr-2 h-4 w-4" />
+                    Add to favorites
                   </Button>
                 </div>
               </div>
