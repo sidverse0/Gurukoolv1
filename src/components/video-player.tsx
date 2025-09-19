@@ -48,7 +48,7 @@ interface VideoPlayerProps {
 function formatDuration(seconds: number) {
   const date = new Date(seconds * 1000);
   const hh = date.getUTCHours();
-  const mm = date.getUTCMinutes();
+  const mm = date.getUTCMminutes();
   const ss = date.getUTCSeconds().toString().padStart(2, '0');
   if (hh) {
     return `${hh}:${mm.toString().padStart(2, '0')}:${ss}`;
@@ -119,7 +119,14 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   }, []);
 
   useEffect(() => {
-    showControls();
+    if (playing) {
+      showControls();
+    } else {
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
+      setControlsVisible(true);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
@@ -150,12 +157,18 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     }
   };
 
-  const handleSeekMouseDown = () => setSeeking(true);
+  const handleSeekMouseDown = () => {
+    setSeeking(true);
+    if (controlsTimeoutRef.current) {
+      clearTimeout(controlsTimeoutRef.current);
+    }
+  };
   const handleSeekChange = (newPlayed: number[]) => setPlayed(newPlayed[0]);
   
   const handleSeekMouseUp = (newPlayed: number[]) => {
     setSeeking(false);
     playerRef.current?.seekTo(newPlayed[0]);
+    showControls();
   };
 
   const handleSeek = (seconds: number) => {
@@ -189,14 +202,26 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     setMuted(newVolume[0] === 0);
   };
 
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest('.player-controls-bottom')) {
+      return;
+    }
+    if (controlsVisible) {
+      handlePlayPause();
+    } else {
+      showControls();
+    }
+  }
+
+
   return (
     <div className="space-y-4">
       <div
         ref={playerContainerRef}
         className="aspect-video w-full overflow-hidden rounded-lg bg-black relative group/player"
         onMouseMove={showControls}
-        onMouseLeave={() => { if (playing) setControlsVisible(false); }}
-        onClick={showControls}
+        onMouseLeave={hideControls}
+        onClick={handleContainerClick}
       >
         {hasWindow ? (
           <ReactPlayer
@@ -230,25 +255,22 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             "absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300",
             controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
-          onClick={e => {
-            if (e.target === e.currentTarget) handlePlayPause();
-          }}
         >
            <div className="flex items-center justify-center gap-8 md:gap-16">
-            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
+            <Button onClick={(e) => {e.stopPropagation(); handleSeek(-10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
               <RotateCcw className="h-8 w-8" />
             </Button>
-            <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
+            <Button onClick={(e) => {e.stopPropagation(); handlePlayPause();}} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
               {playing ? <Pause className="h-12 w-12" /> : <Play className="h-12 w-12" />}
             </Button>
-             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
+             <Button onClick={(e) => {e.stopPropagation(); handleSeek(10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
               <RotateCw className="h-8 w-8" />
             </Button>
           </div>
         </div>
         
         <div className={cn(
-          "absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/30 to-transparent",
+          "player-controls-bottom absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/30 to-transparent",
           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
           <div className="flex flex-col gap-2 text-white">
@@ -263,6 +285,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 onMouseDown={handleSeekMouseDown}
                 onValueChangeCommit={handleSeekMouseUp}
                 className="w-full h-2 group"
+                onClick={e => e.stopPropagation()}
               />
               <span className="text-xs font-mono w-12 text-center">{formatDuration(duration)}</span>
             </div>
@@ -271,11 +294,11 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
               <div className="flex items-center gap-1">
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
+                    <Button onClick={e => e.stopPropagation()} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
                       <Settings className="h-5 w-5" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-56 bg-black/80 border-white/20 text-white p-2 mb-2">
+                  <PopoverContent onClick={e => e.stopPropagation()} className="w-56 bg-black/80 border-white/20 text-white p-2 mb-2">
                     <div className="space-y-2">
                       <p className='px-2 py-1.5 text-sm font-semibold'>Playback Speed</p>
                       <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
@@ -303,7 +326,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
               </div>
 
               <div className="flex items-center gap-1">
-                <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
+                <Button onClick={(e) => {e.stopPropagation(); handleToggleFullscreen();}} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
                   {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
                 </Button>
               </div>
