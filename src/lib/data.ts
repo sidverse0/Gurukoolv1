@@ -33,22 +33,14 @@ export async function getBatches(): Promise<Batch[]> {
           ],
         };
       }
-      const details = await getBatchDetails(batch.id);
+      // For other batches, we'll just return the basic info for now
+      // to prevent the recursive loop. Full details will be fetched
+      // on the details page.
       return {
         ...batch,
-        videoCount: details?.video_count || 0,
-        noteCount: details?.note_count || 0,
-        subjects: details
-          ? [
-              {
-                id: String(details.subject_id),
-                title: details.subject_name,
-                videos: details.videos,
-                notes:
-                  details.videos?.flatMap(v => v.notes).filter(n => n) || [],
-              },
-            ]
-          : [],
+        videoCount: 0,
+        noteCount: 0,
+        subjects: [],
       };
     })
   );
@@ -67,9 +59,9 @@ export async function getBatchDetails(
   if (!batch || !batch.jsonUrl || batch.jsonUrl.includes('FILE_ID')) {
     // This structure helps in showing a proper "coming soon" or empty state.
     const allBatches = await getBatches().catch(() => []);
-    const currentBatch = allBatches.find(b => b.id === batchId);
+    const currentBatchInfo = allBatches.find(b => b.id === batchId);
     return {
-      subject_name: currentBatch?.title || 'Unknown Batch',
+      subject_name: currentBatchInfo?.title || 'Unknown Batch',
       subject_id: 0,
       video_count: 0,
       note_count: 0,
