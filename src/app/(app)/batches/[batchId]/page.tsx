@@ -87,7 +87,7 @@ export default function BatchDetailsPage() {
       </Button>
 
       <div className="space-y-4 pt-4">
-        {batchDetails.subjects.map(subject => (
+        {batchDetails.subjects.map((subject, index) => (
           <Link
             href={`/batches/${batchId}/${subject.id}`}
             key={subject.id}
@@ -97,7 +97,7 @@ export default function BatchDetailsPage() {
               <CardHeader className="flex flex-row items-center justify-between">
                 <div className="flex-1">
                   <CardTitle className="font-headline text-lg">
-                    {subject.name}
+                    {index + 1}. {subject.name}
                   </CardTitle>
                   <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     <div className="flex items-center">
