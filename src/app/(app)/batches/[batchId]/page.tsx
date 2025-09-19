@@ -201,6 +201,7 @@ export default function BatchDetailsPage({
                             <iframe
                               src={note.url}
                               className="h-full w-full border-0"
+                              title={note.title}
                             />
                           </div>
                         </DialogContent>
