@@ -18,7 +18,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-4 left-1/2 z-40 h-16 w-[95%] -translate-x-1/2 rounded-full border border-border/50 bg-background/90 shadow-lg backdrop-blur-lg md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-40 h-16 border-t border-border/50 bg-background/90 backdrop-blur-lg md:hidden">
       <div className="grid h-full grid-cols-5">
         {links.map(link => {
           const isActive = pathname.startsWith(link.href);
@@ -42,7 +42,7 @@ export function BottomNav() {
               )}>
                 {link.label}
               </span>
-               <div className={cn('absolute -bottom-1 h-1 w-0 rounded-full bg-primary transition-all duration-300', isActive && 'w-4')} />
+               <div className={cn('absolute -top-1 h-1 w-0 rounded-full bg-primary transition-all duration-300', isActive && 'w-4')} />
             </Link>
           );
         })}
