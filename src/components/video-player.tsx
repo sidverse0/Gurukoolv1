@@ -77,7 +77,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const hideControls = () => {
-    if (playing) {
+    if (playing && !seeking) {
       setControlsVisible(false);
     }
   };
@@ -118,7 +118,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   }, []);
 
   useEffect(() => {
-    if (playing) {
+    if (playing && !seeking) {
       showControls();
     } else {
       if (controlsTimeoutRef.current) {
@@ -127,7 +127,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       setControlsVisible(true);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing]);
+  }, [playing, seeking]);
 
   const handleSuggestResolution = async () => {
     setIsLoading(true);
@@ -158,19 +158,16 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
   const handleSeekMouseDown = () => {
     setSeeking(true);
-    if (controlsTimeoutRef.current) {
-      clearTimeout(controlsTimeoutRef.current);
-    }
   };
   const handleSeekChange = (newPlayed: number[]) => {
       setPlayed(newPlayed[0]);
-      playerRef.current?.seekTo(newPlayed[0]);
   }
   
-  const handleSeekMouseUp = (newPlayed: number[]) => {
+  const handleSeekMouseUp = () => {
     setSeeking(false);
-    playerRef.current?.seekTo(newPlayed[0]);
-    showControls();
+    if(playerRef.current){
+      playerRef.current.seekTo(played);
+    }
   };
 
   const handleSeek = (seconds: number) => {
@@ -208,7 +205,12 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     if ((e.target as HTMLElement).closest('.player-controls')) {
       return;
     }
-    setControlsVisible(v => !v);
+    // Only toggle play/pause if controls are visible to avoid accidental pauses
+    if(controlsVisible) {
+      handlePlayPause();
+    } else {
+      showControls();
+    }
   }
 
 
@@ -250,7 +252,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         
         <div 
           className={cn(
-            "player-controls absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300",
+            "player-controls absolute inset-0 flex items-center justify-center bg-transparent transition-opacity duration-300",
             controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
         >
@@ -271,7 +273,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           "player-controls absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/30 to-transparent",
           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
-          <div className="flex flex-col gap-1 text-white">
+          <div className="flex flex-col gap-2 text-white">
              <div className="flex items-center justify-between text-xs font-mono px-1">
                 <span>{formatDuration(played * duration)}</span>
                 <span>{formatDuration(duration)}</span>
@@ -284,7 +286,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 value={[played]}
                 onValueChange={handleSeekChange}
                 onMouseDown={handleSeekMouseDown}
-                onValueChangeCommit={handleSeekMouseUp}
+                onPointerUp={handleSeekMouseUp}
                 className="w-full h-2 group"
                 onClick={e => e.stopPropagation()}
               />
@@ -350,5 +352,3 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
-
-    
