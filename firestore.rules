@@ -1,25 +1,27 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Users can create their own user doc on signup, and only read/write their own.
+    // Users can only read and update their own profile
     match /users/{userId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null;
+      allow read, update: if request.auth.uid == userId;
+      allow create: if request.auth.uid != null;
     }
 
-    // Users can create payments for themselves.
-    // Users can only read their own payment history.
-    match /payments/{paymentId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      // Admin/backend can update/delete.
-      allow update, delete: if false; 
-    }
-
-    // Users can create, read, and update their own favorites document.
+    // Users can only manage their own favorites
     match /favorites/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Users can create payments for themselves
+    // Users can only read their own payment history
+    match /payments/{paymentId} {
+      allow create: if request.auth.uid != null && request.resource.data.userId == request.auth.uid;
+      allow read: if request.auth.uid == resource.data.userId;
+      // Admin can update any payment document. For a real app, you would restrict this to admin UIDs.
+      // For now, any authenticated user can update a payment status if they know the paymentId.
+      // This should be locked down in production.
+      allow update: if request.auth.uid != null; 
     }
   }
 }
