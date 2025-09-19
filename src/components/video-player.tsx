@@ -205,7 +205,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
   const toggleControls = () => {
     if (controlsVisible) {
-      handlePlayPause();
+      setControlsVisible(false);
     } else {
       showControls();
     }
@@ -304,37 +304,39 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           "player-controls absolute top-0 right-0 p-3 transition-opacity duration-300",
            controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-pink-400 hover:bg-transparent hover:text-pink-400">
-                <Settings className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-48 bg-black/80 border-white/20 text-white p-2 mb-2 mr-2">
-              <DropdownMenuGroup>
-                <p className='px-2 py-1.5 text-xs font-semibold'>Playback Speed</p>
-                <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
-                  <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="1">Normal</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="1.5">1.5x</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="2">2x</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-                <DropdownMenuSeparator className='bg-white/20 my-2' />
-                  <div className='flex items-center gap-2 px-2 py-1.5'>
-                    <button onClick={() => setMuted(!muted)}>
-                      {muted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                    </button>
-                    <Slider 
-                      min={0}
-                      max={1}
-                      step={0.05}
-                      value={muted ? [0] : [volume]}
-                      onValueChange={handleVolumeChange}
-                    />
-                  </div>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {!fullscreen && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-pink-400 hover:bg-transparent hover:text-pink-400">
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48 bg-black/80 border-white/20 text-white p-2 mb-2 mr-2">
+                <DropdownMenuGroup>
+                  <p className='px-2 py-1.5 text-xs font-semibold'>Playback Speed</p>
+                  <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
+                    <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="1">Normal</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="1.5">1.5x</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="2">2x</DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                  <DropdownMenuSeparator className='bg-white/20 my-2' />
+                    <div className='flex items-center gap-2 px-2 py-1.5'>
+                      <button onClick={() => setMuted(!muted)}>
+                        {muted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                      </button>
+                      <Slider 
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        value={muted ? [0] : [volume]}
+                        onValueChange={handleVolumeChange}
+                      />
+                    </div>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
       <div>
