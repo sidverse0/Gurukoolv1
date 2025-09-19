@@ -19,6 +19,7 @@ import SUBJECT_6178_DATA from '@/data/subject-6178.json';
 import SUBJECT_5877_DATA from '@/data/subject-5877.json';
 import SUBJECT_4643_DATA from '@/data/subject-4643.json';
 import SUBJECT_4842_DATA from '@/data/subject-4842.json';
+import SUBJECT_4630_DATA from '@/data/subject-4630.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -43,6 +44,7 @@ const localSubjectData: { [key: string]: any } = {
   '5877': SUBJECT_5877_DATA,
   '4643': SUBJECT_4643_DATA,
   '4842': SUBJECT_4842_DATA,
+  '4630': SUBJECT_4630_DATA,
 };
 
 
