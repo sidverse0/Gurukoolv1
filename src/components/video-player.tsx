@@ -132,15 +132,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     setSeeking(true);
   };
   
-  const handleSeekChange = (newPlayed: number[]) => {
-      setPlayed(newPlayed[0]);
-  }
-  
-  const handleSeekPointerUp = (newPlayed: number[]) => {
-    setSeeking(false);
-    if(playerRef.current){
-      playerRef.current.seekTo(newPlayed[0]);
-    }
+  const handleSeekCommit = (newPlayed: number[]) => {
+      const playedValue = newPlayed[0];
+      setPlayed(playedValue);
+      if(playerRef.current){
+        playerRef.current.seekTo(playedValue);
+      }
+      setSeeking(false);
   };
 
   const handleSeek = (seconds: number) => {
@@ -258,9 +256,8 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 max={0.999999}
                 step={0.001}
                 value={[played]}
-                onValueChange={handleSeekChange}
+                onValueCommit={handleSeekCommit}
                 onPointerDown={handleSeekPointerDown}
-                onValueCommit={handleSeekPointerUp}
                 className="w-full h-2 group"
               />
               <span className="text-xs font-mono">{formatDuration(duration)}</span>
@@ -313,3 +310,5 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
+
+    
