@@ -1,0 +1,29 @@
+
+{
+  "batchId": "adv-rn-201",
+  "title": "Advanced React Native",
+  "subjects": [
+    {
+      "id": "perf",
+      "title": "Module 1: Performance Optimization",
+      "videos": [
+        { "title": "Understanding the Bridge", "url": "lB8B4r_c3bY", "duration": "18:20" },
+        { "title": "Optimizing FlatLists", "url": "5ZoIe20Lh6I", "duration": "24:30" }
+      ],
+      "notes": [
+        { "title": "Performance Tuning Guide", "url": "/sample.pdf" }
+      ]
+    },
+    {
+      "id": "native-modules",
+      "title": "Module 2: Native Modules & UI",
+      "videos": [
+        { "title": "Bridging Native iOS Code", "url": "p2h3j4h3j4h", "duration": "35:10" },
+        { "title": "Bridging Native Android Code", "url": "k2h3j4h3j4h", "duration": "38:40" }
+      ],
+      "notes": [
+        { "title": "Native Module Creation", "url": "/sample.pdf" }
+      ]
+    }
+  ]
+}

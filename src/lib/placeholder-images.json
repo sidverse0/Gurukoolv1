@@ -1,3 +1,28 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "rn-101-thumb",
+      "description": "Thumbnail for React Native Fundamentals course",
+      "imageUrl": "https://picsum.photos/seed/react101/600/400",
+      "imageHint": "programming code"
+    },
+    {
+      "id": "adv-rn-201-thumb",
+      "description": "Thumbnail for Advanced React Native course",
+      "imageUrl": "https://picsum.photos/seed/react201/600/400",
+      "imageHint": "abstract code"
+    },
+    {
+      "id": "js-pro-thumb",
+      "description": "Thumbnail for JavaScript Pro course",
+      "imageUrl": "https://picsum.photos/seed/jspro/600/400",
+      "imageHint": "glowing code"
+    },
+    {
+      "id": "css-master-thumb",
+      "description": "Thumbnail for CSS Mastery course",
+      "imageUrl": "https://picsum.photos/seed/cssmaster/600/400",
+      "imageHint": "web design"
+    }
+  ]
 }

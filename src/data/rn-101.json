@@ -1,0 +1,40 @@
+
+{
+  "batchId": "rn-101",
+  "title": "React Native Fundamentals",
+  "subjects": [
+    {
+      "id": "intro",
+      "title": "Module 1: Introduction to React Native",
+      "videos": [
+        { "title": "Course Overview", "url": "qjP4D5_p-m8", "duration": "10:32" },
+        { "title": "Setting up Your Environment", "url": "A9fC1BY4I4A", "duration": "15:45" }
+      ],
+      "notes": [
+        { "title": "Introduction Slides", "url": "/sample.pdf" }
+      ]
+    },
+    {
+      "id": "components",
+      "title": "Module 2: Core Components",
+      "videos": [
+        { "title": "Understanding View, Text, and Image", "url": "o1ch4j2v1dI", "duration": "22:10" },
+        { "title": "Styling Components", "url": "E-h-h8j3rqI", "duration": "18:05" }
+      ],
+      "notes": [
+        { "title": "Core Components Cheatsheet", "url": "/sample.pdf" }
+      ]
+    },
+    {
+      "id": "navigation",
+      "title": "Module 3: Navigation",
+      "videos": [
+        { "title": "Stack Navigator", "url": "gOaW5eQcSFo", "duration": "25:00" },
+        { "title": "Tab Navigator", "url": "xGkf0_5zJtE", "duration": "20:15" }
+      ],
+      "notes": [
+        { "title": "React Navigation Guide", "url": "/sample.pdf" }
+      ]
+    }
+  ]
+}

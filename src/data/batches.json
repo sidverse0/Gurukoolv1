@@ -1,0 +1,31 @@
+
+[
+  {
+    "id": "rn-101",
+    "title": "React Native Fundamentals",
+    "description": "Master the basics of React Native and build your first cross-platform mobile app from scratch.",
+    "instructor": "Jane Doe",
+    "thumbnailId": "rn-101-thumb"
+  },
+  {
+    "id": "adv-rn-201",
+    "title": "Advanced React Native",
+    "description": "Dive deep into advanced concepts like performance optimization, native modules, and complex animations.",
+    "instructor": "John Smith",
+    "thumbnailId": "adv-rn-201-thumb"
+  },
+  {
+    "id": "js-pro",
+    "title": "JavaScript Pro",
+    "description": "Become a JavaScript expert. Covers asynchronous patterns, functional programming, and modern tooling.",
+    "instructor": "Alex Ray",
+    "thumbnailId": "js-pro-thumb"
+  },
+  {
+    "id": "css-master",
+    "title": "CSS Mastery",
+    "description": "Unlock the full potential of CSS with advanced selectors, Flexbox, Grid, and responsive design techniques.",
+    "instructor": "Emily White",
+    "thumbnailId": "css-master-thumb"
+  }
+]
