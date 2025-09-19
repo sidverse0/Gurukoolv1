@@ -29,6 +29,12 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'httpshttps',
+        hostname: 'api.qrserver.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
         protocol: 'https',
         hostname: 'kgs.nyc3.digitaloceanspaces.com',
         port: '',
