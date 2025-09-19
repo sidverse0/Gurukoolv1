@@ -36,6 +36,12 @@
       "description": "Thumbnail for Ethics course",
       "imageUrl": "https://picsum.photos/seed/ethics/600/400",
       "imageHint": "philosophy statue"
+    },
+    {
+      "id": "bpsc-mentorship-566-thumb",
+      "description": "Thumbnail for BPSC Mentorship Programme",
+      "imageUrl": "https://picsum.photos/seed/bpscmentor/600/400",
+      "imageHint": "mentorship classroom"
     }
   ]
 }

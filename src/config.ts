@@ -11,4 +11,8 @@ export const BATCHES = [
     id: 'upsc-287',
     jsonUrl: '', // Will use local file
   },
+  {
+    id: 'bpsc-mentorship-566',
+    jsonUrl: '', // Will use local file
+  },
 ];
