@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { doc, setDoc } from 'firebase/firestore';
+
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -55,7 +57,7 @@ export default function ProfilePage() {
             </Avatar>
             <div>
               <CardTitle className="font-headline text-2xl">
-                {user?.email || 'Guest User'}
+                {user?.displayName || user?.email || 'Guest User'}
               </CardTitle>
               <p className="text-muted-foreground">UID: {user?.uid}</p>
             </div>
@@ -63,6 +65,14 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-6">
+             <div>
+              <h3 className="text-lg font-semibold text-foreground">
+                Account Details
+              </h3>
+              <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                 <p><strong>Email:</strong> {user?.email}</p>
+              </div>
+            </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
                 Actions
