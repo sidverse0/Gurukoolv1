@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -6,6 +7,7 @@ import {
   BookCopy,
   FileText,
   Home,
+  Search,
   User,
 } from 'lucide-react';
 
@@ -21,6 +23,7 @@ import { Icons } from '@/components/icons';
 const links = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/batches', label: 'Batches', icon: BookCopy },
+  { href: '/search', label: 'Search', icon: Search },
   { href: '/notes', label: 'Notes', icon: FileText },
   { href: '/profile', label: 'Profile', icon: User },
 ];

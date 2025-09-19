@@ -1,3 +1,6 @@
+
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +17,10 @@ export default function ProfilePage() {
         <CardHeader className="bg-muted/30 p-6">
           <div className="flex items-center space-x-4">
             <Avatar className="h-20 w-20 border-2 border-primary">
-              <AvatarImage src="https://picsum.photos/seed/user-avatar/200" data-ai-hint="person face" />
+              <AvatarImage
+                src="https://picsum.photos/seed/user-avatar/200"
+                data-ai-hint="person face"
+              />
               <AvatarFallback>GU</AvatarFallback>
             </Avatar>
             <div>

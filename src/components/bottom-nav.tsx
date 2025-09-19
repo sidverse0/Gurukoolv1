@@ -1,14 +1,16 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookCopy, FileText, Home, User } from 'lucide-react';
+import { BookCopy, FileText, Home, Search, User } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/batches', label: 'Batches', icon: BookCopy },
+  { href: '/search', label: 'Search', icon: Search },
   { href: '/notes',label: 'Notes', icon: FileText },
   { href: '/profile', label: 'Profile', icon: User },
 ];
@@ -21,17 +23,19 @@ export function BottomNav() {
     return null;
   }
 
+  const mainLinks = links.slice(0, 5);
+
   return (
     <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-background/95 backdrop-blur-sm md:hidden">
-      <div className="grid h-16 grid-cols-4">
-        {links.map(link => {
+      <div className="grid h-16 grid-cols-5">
+        {mainLinks.map(link => {
           const isActive = pathname.startsWith(link.href);
           return (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                'group inline-flex flex-col items-center justify-center px-5 text-muted-foreground',
+                'group inline-flex flex-col items-center justify-center p-1 text-center text-muted-foreground',
                 isActive && 'text-primary'
               )}
             >
