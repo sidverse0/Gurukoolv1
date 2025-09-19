@@ -77,6 +77,12 @@
       "description": "Thumbnail for 72nd BPSC Foundation Batch VI",
       "imageUrl": "https://picsum.photos/seed/bpsc72-6/600/400",
       "imageHint": "government building"
+    },
+    {
+      "id": "bpsc-72-709-thumb",
+      "description": "Thumbnail for 72nd BPSC Foundation Batch VI (Online)",
+      "imageUrl": "https://picsum.photos/seed/bpsc72-7/600/400",
+      "imageHint": "government building"
     }
   ]
 }
