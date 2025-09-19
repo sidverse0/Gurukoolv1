@@ -170,7 +170,7 @@ export default function BuyPage() {
             <div className="flex flex-col items-center gap-4">
               <div className="relative aspect-square w-full max-w-[250px] rounded-lg bg-muted p-4">
                  <Image
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=sid@google.com&pn=Siddhant&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`}
                   alt="Payment QR Code"
                   width={250}
                   height={250}
