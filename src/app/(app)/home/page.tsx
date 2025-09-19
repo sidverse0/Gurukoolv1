@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -191,6 +190,20 @@ export default function HomePage() {
           )}
         </section>
       </div>
+
+       <footer className="mt-12 border-t pt-6 text-center text-sm text-muted-foreground">
+        <div className="flex items-center justify-center gap-2">
+          <div className="relative h-8 w-8">
+            <div className="absolute inset-0 rounded-full bg-primary/50 blur-sm animate-pulse"></div>
+            <img
+              src="https://picsum.photos/seed/sid-dev/100"
+              alt="Sid"
+              className="relative h-full w-full rounded-full border-2 border-primary"
+            />
+          </div>
+          <span>developed by sid with ❤️</span>
+        </div>
+      </footer>
     </div>
   );
 }
