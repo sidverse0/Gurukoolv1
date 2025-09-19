@@ -87,22 +87,20 @@ export default function BatchesPage() {
       setLoading(true);
       const batches = await getBatches();
       setAllBatches(batches);
+      setFilteredBatches(batches); // Initialize with all batches
       setLoading(false);
     }
     fetchBatches();
   }, []);
 
   useEffect(() => {
-    // Show all batches, ignoring purchase status
-    const availableBatches = allBatches;
-
     if (searchTerm === '') {
-      setFilteredBatches(availableBatches);
+      setFilteredBatches(allBatches);
       return;
     }
 
     const lowercasedFilter = searchTerm.toLowerCase();
-    const filtered = availableBatches.filter(
+    const filtered = allBatches.filter(
       batch =>
         batch.title.toLowerCase().includes(lowercasedFilter) ||
         (batch.instructor &&
