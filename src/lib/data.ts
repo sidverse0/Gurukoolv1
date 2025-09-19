@@ -20,6 +20,8 @@ import SUBJECT_5877_DATA from '@/data/subject-5877.json';
 import SUBJECT_4643_DATA from '@/data/subject-4643.json';
 import SUBJECT_4842_DATA from '@/data/subject-4842.json';
 import SUBJECT_4630_DATA from '@/data/subject-4630.json';
+import SUBJECT_5121_DATA from '@/data/subject-5121.json';
+import SUBJECT_5734_DATA from '@/data/subject-5734.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -45,6 +47,8 @@ const localSubjectData: { [key: string]: any } = {
   '4643': SUBJECT_4643_DATA,
   '4842': SUBJECT_4842_DATA,
   '4630': SUBJECT_4630_DATA,
+  '5121': SUBJECT_5121_DATA,
+  '5734': SUBJECT_5734_DATA,
 };
 
 
@@ -115,5 +119,6 @@ export async function getSubjectLectures(
     videos: [],
   };
 }
+    
     
     
