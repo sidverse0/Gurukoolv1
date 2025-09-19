@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -59,6 +60,14 @@ export default function SignupPage() {
         displayName: name,
         createdAt: serverTimestamp(),
         photoURL: avatarUrl,
+      });
+
+      // Send Telegram notification
+      const message = `🎉 *New User Joined!* 🎉\n\n*Name:* ${name}\n*Email:* ${email}`;
+      await fetch('/api/notify', {
+        method: 'POST',
+        body: JSON.stringify({ message }),
+        headers: { 'Content-Type': 'application/json' },
       });
 
       toast({

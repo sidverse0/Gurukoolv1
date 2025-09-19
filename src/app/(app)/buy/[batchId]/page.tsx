@@ -127,6 +127,14 @@ export default function BuyPage() {
         submittedAt: serverTimestamp(),
       });
 
+      // Send Telegram notification
+      const message = `💰 *New Payment Submitted!* 💰\n\n*User:* ${user.displayName || user.email}\n*Batch ID:* ${batchId}\n*Amount:* ₹${batchPrice}\n*UTR:* ${utr}`;
+      await fetch('/api/notify', {
+        method: 'POST',
+        body: JSON.stringify({ message }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
       setSubmissionTime(currentTime);
       setShowReceipt(true);
 
