@@ -313,6 +313,3 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
-
-    
-
