@@ -197,6 +197,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         ref={playerContainerRef}
         className="aspect-video w-full overflow-hidden rounded-lg bg-black relative group/player"
         onClick={handleContainerClick}
+        onMouseMove={showControls}
       >
         {hasWindow ? (
           <ReactPlayer
@@ -233,13 +234,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           )}
         >
            <div className="flex items-center justify-center gap-8 md:gap-16">
-            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/40">
+            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-pink-400 bg-black/30 hover:bg-black/40">
               <RotateCcw className="h-8 w-8" />
             </Button>
             <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-24 w-24 rounded-full text-white bg-black/30 hover:bg-black/40">
               {playing ? <Pause className="h-16 w-16" /> : <Play className="h-16 w-16" />}
             </Button>
-             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/40">
+             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-sky-400 bg-black/30 hover:bg-black/40">
               <RotateCw className="h-8 w-8" />
             </Button>
           </div>
@@ -257,12 +258,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 max={0.999999}
                 step={0.001}
                 value={[played]}
+                onValueChange={(value) => setPlayed(value[0])}
                 onValueCommit={handleSeekCommit}
                 onPointerDown={handleSeekPointerDown}
                 className="w-full h-2 group"
               />
               <span className="text-xs font-mono">{formatDuration(duration)}</span>
-              <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white/80">
+              <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-yellow-400 hover:bg-transparent hover:text-yellow-400/80">
                 {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
               </Button>
             </div>
@@ -276,7 +278,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           {!fullscreen && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white/80">
+                <Button variant="ghost" size="icon" className="text-purple-400 hover:bg-transparent hover:text-purple-400/80">
                   <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -292,7 +294,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                   <DropdownMenuSeparator className='bg-white/20 my-2' />
                     <div className='flex items-center gap-2 px-2 py-1.5'>
                       <button onClick={() => setMuted(!muted)}>
-                        {muted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                        {muted || volume === 0 ? <VolumeX className="h-5 w-5 text-red-500" /> : <Volume2 className="h-5 w-5 text-green-500" />}
                       </button>
                       <Slider 
                         min={0}
@@ -313,3 +315,4 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 }
 
     
+
