@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'kgs.nyc3.digitaloceanspaces.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'files.catbox.moe',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
