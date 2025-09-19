@@ -162,7 +162,10 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       clearTimeout(controlsTimeoutRef.current);
     }
   };
-  const handleSeekChange = (newPlayed: number[]) => setPlayed(newPlayed[0]);
+  const handleSeekChange = (newPlayed: number[]) => {
+      setPlayed(newPlayed[0]);
+      playerRef.current?.seekTo(newPlayed[0]);
+  }
   
   const handleSeekMouseUp = (newPlayed: number[]) => {
     setSeeking(false);
@@ -205,11 +208,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     if ((e.target as HTMLElement).closest('.player-controls')) {
       return;
     }
-    if (controlsVisible) {
-      handlePlayPause();
-    } else {
-      showControls();
-    }
+    setControlsVisible(v => !v);
   }
 
 
@@ -256,13 +255,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           )}
         >
            <div className="flex items-center justify-center gap-8 md:gap-16">
-            <Button onClick={(e) => {e.stopPropagation(); handleSeek(-10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-transparent hover:text-white">
+            <Button onClick={(e) => {e.stopPropagation(); handleSeek(-10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
               <RotateCcw className="h-8 w-8" />
             </Button>
-            <Button onClick={(e) => {e.stopPropagation(); handlePlayPause();}} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-black/30 hover:bg-transparent hover:text-white">
+            <Button onClick={(e) => {e.stopPropagation(); handlePlayPause();}} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
               {playing ? <Pause className="h-12 w-12" /> : <Play className="h-12 w-12" />}
             </Button>
-             <Button onClick={(e) => {e.stopPropagation(); handleSeek(10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-transparent hover:text-white">
+             <Button onClick={(e) => {e.stopPropagation(); handleSeek(10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
               <RotateCw className="h-8 w-8" />
             </Button>
           </div>
@@ -272,26 +271,27 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           "player-controls absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/30 to-transparent",
           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
-          <div className="flex flex-col gap-2 text-white">
-             <div className="flex items-center gap-3">
-              <span className="text-xs font-mono w-12 text-center">{formatDuration(played * duration)}</span>
-               <div className="flex-grow" />
-               <Button onClick={(e) => {e.stopPropagation(); handleToggleFullscreen();}} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
+          <div className="flex flex-col gap-1 text-white">
+             <div className="flex items-center justify-between text-xs font-mono px-1">
+                <span>{formatDuration(played * duration)}</span>
+                <span>{formatDuration(duration)}</span>
+             </div>
+            <div className="flex items-center gap-3">
+              <Slider
+                min={0}
+                max={0.999999}
+                step={0.001}
+                value={[played]}
+                onValueChange={handleSeekChange}
+                onMouseDown={handleSeekMouseDown}
+                onValueChangeCommit={handleSeekMouseUp}
+                className="w-full h-2 group"
+                onClick={e => e.stopPropagation()}
+              />
+              <Button onClick={(e) => {e.stopPropagation(); handleToggleFullscreen();}} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
                 {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
               </Button>
             </div>
-            <Slider
-              min={0}
-              max={0.999999}
-              step={0.001}
-              value={[played]}
-              onValueChange={handleSeekChange}
-              onMouseDown={handleSeekMouseDown}
-              onValueChangeCommit={handleSeekMouseUp}
-              className="w-full h-2 group"
-              onClick={e => e.stopPropagation()}
-            />
-             <span className="text-xs font-mono w-12 text-center -mt-2">{formatDuration(duration)}</span>
           </div>
         </div>
 
@@ -305,12 +305,12 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 <Settings className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent onClick={e => e.stopPropagation()} className="w-56 bg-black/80 border-white/20 text-white p-2 mb-2">
+            <DropdownMenuContent onClick={e => e.stopPropagation()} className="w-48 bg-black/80 border-white/20 text-white p-2 mb-2 mr-2">
               <DropdownMenuGroup>
-                <p className='px-2 py-1.5 text-sm font-semibold'>Playback Speed</p>
+                <p className='px-2 py-1.5 text-xs font-semibold'>Playback Speed</p>
                 <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
                   <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="1">1x (Normal)</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="1">Normal</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="1.5">1.5x</DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="2">2x</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
@@ -350,3 +350,5 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
+
+    
