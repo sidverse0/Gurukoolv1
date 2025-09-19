@@ -9,6 +9,7 @@ import BPSC_ESSAY_556_DATA from '@/data/bpsc-essay-556.json';
 import SUBJECT_5733_DATA from '@/data/subject-5733.json';
 import BPSC_71_569_DATA from '@/data/bpsc-71-569.json';
 import BPSC_71_411_DATA from '@/data/bpsc-71-411.json';
+import BPSC_71_480_DATA from '@/data/bpsc-71-480.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -18,6 +19,7 @@ const localBatchData: { [key: string]: any } = {
   'bpsc-essay-556': BPSC_ESSAY_556_DATA,
   'bpsc-71-569': BPSC_71_569_DATA,
   'bpsc-71-411': BPSC_71_411_DATA,
+  'bpsc-71-480': BPSC_71_480_DATA,
 };
 
 const localSubjectData: { [key: string]: any } = {

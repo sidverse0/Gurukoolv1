@@ -65,6 +65,12 @@
       "description": "Thumbnail for 71st BPSC on-line Batch II",
       "imageUrl": "https://picsum.photos/seed/bpsc71-2/600/400",
       "imageHint": "government building"
+    },
+    {
+      "id": "bpsc-71-480-thumb",
+      "description": "Thumbnail for 71st BPSC on-line Batch III",
+      "imageUrl": "https://picsum.photos/seed/bpsc71-3/600/400",
+      "imageHint": "government building"
     }
   ]
 }
