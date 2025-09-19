@@ -2,6 +2,7 @@
 'use client';
 
 import { Suspense } from 'react';
+import Link from 'next/link';
 import {
   useSearchParams,
   useParams,
@@ -16,6 +17,7 @@ import {
   ThumbsDown,
   Star,
   FileText,
+  Youtube,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
@@ -36,6 +38,7 @@ function VideoPlayerContent() {
 
   const videoId = params.videoId as string;
   const videoDataString = searchParams.get('videoData');
+  const quality = searchParams.get('quality');
   
   let video: Video | null = null;
   try {
@@ -70,6 +73,16 @@ function VideoPlayerContent() {
     }
   }
 
+  const videoUrlToPlay = (quality === 'hd' && video.hd_video_url) ? video.hd_video_url : video.video_url;
+
+  const constructHdUrl = () => {
+    const videoObjectString = encodeURIComponent(JSON.stringify(video));
+    const baseUrl = `/videos/${encodeURIComponent(
+      video!.video_url
+    )}?videoData=${videoObjectString}&quality=hd`;
+    return baseUrl;
+  };
+
   return (
     <div className="container mx-auto max-w-5xl">
       <Button variant="ghost" onClick={() => router.back()} className="mb-4">
@@ -78,7 +91,7 @@ function VideoPlayerContent() {
       </Button>
 
       <div className="space-y-4">
-        <VideoPlayer videoUrl={video.video_url} />
+        <VideoPlayer videoUrl={videoUrlToPlay} />
         <div className="space-y-4">
           <div>
             <h1 className="font-headline text-2xl font-bold tracking-tight md:text-3xl">
@@ -135,6 +148,14 @@ function VideoPlayerContent() {
               >
                 <FileText className="mr-2" />
                 Notes
+              </Button>
+            )}
+             {video.hd_video_url && (
+               <Button asChild variant="ghost" className="text-muted-foreground">
+                <Link href={constructHdUrl()}>
+                  <Youtube className="mr-2" />
+                  Watch in HD
+                </Link>
               </Button>
             )}
           </div>
