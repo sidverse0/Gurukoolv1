@@ -5,6 +5,9 @@ export interface Batch {
   instructor: string;
   thumbnailId: string;
   jsonUrl: string;
+  subjects?: Subject[];
+  videoCount?: number;
+  noteCount?: number;
 }
 
 export interface Video {

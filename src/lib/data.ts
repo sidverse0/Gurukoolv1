@@ -2,7 +2,7 @@ import type { Batch, SubjectDetails } from '@/lib/types';
 import { BATCHES } from '@/config';
 
 export async function getBatches(): Promise<Batch[]> {
-  return BATCHES.map(b => ({
+  const batches = BATCHES.map(b => ({
     id: b.id,
     title: b.name,
     description: ``,
@@ -10,6 +10,24 @@ export async function getBatches(): Promise<Batch[]> {
     thumbnailId: `${b.id}-thumb`,
     jsonUrl: b.jsonUrl,
   }));
+
+  const enrichedBatches = await Promise.all(
+    batches.map(async batch => {
+      const details = await getBatchDetails(batch.id);
+      const subjects = details?.subjects || [];
+      const videoCount = subjects.reduce(
+        (acc, subject) => acc + subject.videos.length,
+        0
+      );
+      const noteCount = subjects.reduce(
+        (acc, subject) => acc + subject.notes.length,
+        0
+      );
+      return { ...batch, subjects, videoCount, noteCount };
+    })
+  );
+
+  return enrichedBatches;
 }
 
 export async function getBatchDetails(

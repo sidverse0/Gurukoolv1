@@ -10,7 +10,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  BookCopy,
+  Clapperboard,
+  FileText,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default async function BatchesPage() {
@@ -53,10 +58,19 @@ export default async function BatchesPage() {
                   <CardDescription>By {batch.instructor}</CardDescription>
                 )}
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground">
-                  {batch.description}
-                </p>
+              <CardContent className="flex-grow space-y-4">
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <BookCopy className="mr-2 h-4 w-4" />
+                  <span>{batch.subjects?.length ?? 0} Subjects</span>
+                </div>
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Clapperboard className="mr-2 h-4 w-4" />
+                  <span>{batch.videoCount ?? 0} Videos</span>
+                </div>
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>{batch.noteCount ?? 0} Notes</span>
+                </div>
               </CardContent>
               <CardFooter>
                 <Button asChild className="w-full">
