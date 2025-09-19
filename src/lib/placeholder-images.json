@@ -53,6 +53,12 @@
       "description": "Thumbnail for 70वीं BPSC मुख्य परीक्षा निबंध बैच",
       "imageUrl": "https://picsum.photos/seed/bpscessay/600/400",
       "imageHint": "writing essay"
+    },
+    {
+      "id": "bpsc-71-569-thumb",
+      "description": "Thumbnail for 71st BPSC on-line Batch",
+      "imageUrl": "https://picsum.photos/seed/bpsc71/600/400",
+      "imageHint": "government building"
     }
   ]
 }
