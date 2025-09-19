@@ -29,7 +29,7 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
 function BuyPageSkeleton() {
@@ -107,8 +107,9 @@ export default function BuyPage() {
     
     try {
       const currentTime = new Date();
-      const paymentRef = doc(db, 'payments', `${user.uid}_${batchId}`);
-      await setDoc(paymentRef, {
+      // Use addDoc to create a new document with a unique ID for each submission
+      const paymentsCollectionRef = collection(db, 'payments');
+      await addDoc(paymentsCollectionRef, {
         userId: user.uid,
         batchId: batchId,
         utr: utr,
