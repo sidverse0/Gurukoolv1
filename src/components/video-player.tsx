@@ -185,7 +185,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     if (!document.fullscreenElement) {
       try {
         await container.requestFullscreen();
-        await screen.orientation.lock('landscape');
+        screen.orientation.lock('landscape').catch(() => {});
       } catch (err) {
         // Can be ignored
       }
@@ -203,11 +203,15 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     setMuted(newVolume[0] === 0);
   };
 
+  const toggleControls = () => {
+    setControlsVisible(v => !v);
+  }
+
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('.player-controls')) {
       return;
     }
-    setControlsVisible(v => !v);
+    toggleControls();
   }
 
 
@@ -234,6 +238,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             onDuration={setDuration}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
+            onClick={() => {}}
             config={{
               file: {
                 attributes: {
