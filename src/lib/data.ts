@@ -1,5 +1,6 @@
 import type { Batch, SubjectDetails } from '@/lib/types';
 import { BATCHES } from '@/config';
+import ethicsData from '@/data/ethics.json';
 
 export async function getBatches(): Promise<Batch[]> {
   const batches = BATCHES.map(b => ({
@@ -36,6 +37,10 @@ export async function getBatches(): Promise<Batch[]> {
 export async function getBatchDetails(
   batchId: string
 ): Promise<SubjectDetails | null> {
+  if (batchId === 'ethics') {
+    return ethicsData as SubjectDetails;
+  }
+  
   const batch = BATCHES.find(b => b.id === batchId);
   if (!batch || !batch.jsonUrl || batch.jsonUrl.includes('FILE_ID')) {
     // Return a dummy structure if the URL is a placeholder
