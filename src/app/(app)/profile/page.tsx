@@ -4,7 +4,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function ProfilePage() {
   return (
@@ -33,20 +32,6 @@ export default function ProfilePage() {
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground">
-                Account Settings
-              </h3>
-              <div className="mt-4 flex items-center justify-between rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <p className="font-medium">Theme</p>
-                  <p className="text-sm text-muted-foreground">
-                    Switch between light and dark mode.
-                  </p>
-                </div>
-                <ThemeToggle />
-              </div>
-            </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
                 Actions
