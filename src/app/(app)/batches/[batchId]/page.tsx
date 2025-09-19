@@ -1,7 +1,8 @@
+
 'use client';
 
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { getBatchDetails } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,12 +36,9 @@ function SubjectSkeleton() {
   );
 }
 
-export default function BatchDetailsPage({
-  params,
-}: {
-  params: { batchId: string };
-}) {
-  const { batchId } = params;
+export default function BatchDetailsPage() {
+  const params = useParams();
+  const batchId = params.batchId as string;
   const [batchDetails, setBatchDetails] = useState<BatchDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +52,9 @@ export default function BatchDetailsPage({
       setBatchDetails(details);
       setLoading(false);
     }
-    fetchData();
+    if (batchId) {
+      fetchData();
+    }
   }, [batchId]);
 
   if (loading) {
