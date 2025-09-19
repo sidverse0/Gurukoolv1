@@ -94,6 +94,14 @@ export default function BuyPage() {
       });
       return;
     }
+    if (utr.length !== 12 || !/^\d{12}$/.test(utr)) {
+      toast({
+        variant: 'destructive',
+        title: 'Invalid UTR Number',
+        description: 'Please enter a valid 12-digit UTR number.',
+      });
+      return;
+    }
     if (!user) {
       toast({
         variant: 'destructive',
@@ -200,6 +208,8 @@ export default function BuyPage() {
                   value={utr}
                   onChange={(e) => setUtr(e.target.value)}
                   disabled={submitting}
+                  maxLength={12}
+                  pattern="\d{12}"
                 />
               </div>
             </CardContent>
