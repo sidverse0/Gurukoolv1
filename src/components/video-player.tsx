@@ -135,10 +135,10 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   
   const handleSeekCommit = (newPlayed: number[]) => {
       const playedValue = newPlayed[0];
-      if (played !== playedValue) {
-        setPlayed(playedValue);
-        playerRef.current?.seekTo(playedValue);
+      if (playerRef.current) {
+        playerRef.current.seekTo(playedValue);
       }
+      setPlayed(playedValue);
       setSeeking(false);
   };
 
