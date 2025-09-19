@@ -4,16 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ReactPlayer from 'react-player/lazy';
 import type { OnProgressProps } from 'react-player/base';
-import {
-  suggestVideoResolution,
-  type SuggestVideoResolutionOutput,
-} from '@/ai/flows/suggest-video-resolution';
 import { Button } from '@/components/ui/button';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@/components/ui/alert';
 import {
   Sparkles,
   Play,
@@ -26,7 +17,6 @@ import {
   RotateCcw,
   RotateCw,
 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import {
   DropdownMenu,
@@ -56,11 +46,7 @@ function formatDuration(seconds: number) {
 }
 
 export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
-  const [suggestion, setSuggestion] =
-    useState<SuggestVideoResolutionOutput | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [hasWindow, setHasWindow] = useState(false);
-  const { toast } = useToast();
 
   const playerRef = useRef<ReactPlayer>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
@@ -128,25 +114,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
-
-  const handleSuggestResolution = async () => {
-    setIsLoading(true);
-    setSuggestion(null);
-    try {
-      // Mock network speed for demonstration
-      const networkSpeedMbps = Math.floor(Math.random() * 100) + 1;
-      const result = await suggestVideoResolution({ networkSpeedMbps });
-      setSuggestion(result);
-    } catch (error) {
-      console.error('Error suggesting video resolution:', error);
-      toast({
-        variant: 'destructive',
-        title: 'AI Error',
-        description: 'Could not get suggestion. Please try again.',
-      });
-    }
-    setIsLoading(false);
-  };
 
   const handlePlayPause = () => setPlaying(!playing);
   
@@ -339,21 +306,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           )}
         </div>
       </div>
-      <div>
-        <Button onClick={handleSuggestResolution} disabled={isLoading}>
-          <Sparkles className="mr-2 h-4 w-4" />
-          {isLoading ? 'Analyzing...' : 'Suggest Optimal Resolution'}
-        </Button>
-      </div>
-      {suggestion && (
-        <Alert>
-          <Sparkles className="h-4 w-4" />
-          <AlertTitle className="font-headline">
-            AI Suggestion: Play at {suggestion.suggestedResolution}
-          </AlertTitle>
-          <AlertDescription>{suggestion.reason}</AlertDescription>
-        </Alert>
-      )}
     </div>
   );
 }
