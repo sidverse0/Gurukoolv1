@@ -125,6 +125,17 @@ export default function BatchDetailsPage({
     return 'qjP4D5_p-m8'; // fallback video
   };
 
+  const isYoutubeLink = (url: string) => {
+    try {
+      if (!url) return false;
+      const urlObj = new URL(url);
+      return urlObj.hostname.includes('youtube.com');
+    } catch (e) {
+      return false;
+    }
+  };
+
+
   return (
     <div className="container mx-auto max-w-4xl">
       <Button variant="ghost" asChild className="mb-4">
@@ -186,22 +197,31 @@ export default function BatchDetailsPage({
                   {video.title}
                 </h3>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>
+                  {isYoutubeLink(video.hd_video_url) ? (
+                    <Button asChild>
+                      <a href={video.hd_video_url} target="_blank" rel="noopener noreferrer">
                         <Clapperboard className="mr-2 h-4 w-4" />
                         Play Video
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-3xl">
-                      <DialogHeader>
-                        <DialogTitle className="font-headline">
-                          {video.title}
-                        </DialogTitle>
-                      </DialogHeader>
-                      <VideoPlayer videoId={getYoutubeId(video.hd_video_url)} />
-                    </DialogContent>
-                  </Dialog>
+                      </a>
+                    </Button>
+                  ) : (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button>
+                          <Clapperboard className="mr-2 h-4 w-4" />
+                          Play Video
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-3xl">
+                        <DialogHeader>
+                          <DialogTitle className="font-headline">
+                            {video.title}
+                          </DialogTitle>
+                        </DialogHeader>
+                         <VideoPlayer videoId={getYoutubeId(video.hd_video_url)} />
+                      </DialogContent>
+                    </Dialog>
+                  )}
                   {video.notes &&
                     video.notes.map((note, index) => (
                       <Dialog key={index}>
