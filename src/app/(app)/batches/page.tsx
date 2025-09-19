@@ -182,30 +182,30 @@ export default function BatchesPage() {
                   {paid && <BuysCounter batchId={batch.id} />}
                 </div>
 
-                <CardHeader className="pt-4 flex-grow">
+                <CardHeader className="p-4 pb-2">
                   <CardTitle className="font-body text-lg font-bold">
                     {batch.title}
                   </CardTitle>
-                   <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                </CardHeader>
+                <CardContent className="flex-grow p-4 pt-2">
+                  {batch.instructor && (
+                    <p className="mb-2 text-sm text-muted-foreground">By {batch.instructor}</p>
+                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     <div className="flex items-center">
                       <Clapperboard className="mr-1.5 h-4 w-4" />
-                      <span>{totalLectures} Lectures</span>
+                      <span className="font-medium">{totalLectures} Lectures</span>
                     </div>
                     <div className="flex items-center">
                       <FileText className="mr-1.5 h-4 w-4" />
-                      <span>{totalNotes} Notes</span>
+                      <span className="font-medium">{totalNotes} Notes</span>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  {batch.instructor && (
-                    <p className="text-sm text-muted-foreground">By {batch.instructor}</p>
-                  )}
                 </CardContent>
-                <CardFooter className="flex-col items-start p-4">
+                <CardFooter className="flex-col items-start p-4 pt-0">
+                   <div className="w-full h-px bg-border mb-4" />
                   {paid ? (
                      <div className="w-full space-y-4">
-                      <div className='w-full h-px bg-border' />
                       <div className="flex w-full items-center justify-between">
                           <p className="font-headline text-2xl font-bold text-primary">
                             ₹{batchPrice}
@@ -246,5 +246,3 @@ export default function BatchesPage() {
     </div>
   );
 }
-
-    
