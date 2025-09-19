@@ -37,7 +37,7 @@ type Payment = {
 const statusConfig = {
   successful: {
     icon: CheckCircle,
-    variant: 'successful',
+    variant: 'default',
     text: 'Successful',
     className: 'border-green-500 text-green-600',
     bgClassName: 'bg-green-100',
@@ -72,10 +72,11 @@ export default function HistoryPage() {
     }
 
     const paymentsRef = collection(db, 'payments');
+    // We removed orderBy from the query to avoid needing a composite index.
+    // We will sort the data on the client side.
     const q = query(
       paymentsRef,
-      where('userId', '==', user.uid),
-      orderBy('submittedAt', 'desc')
+      where('userId', '==', user.uid)
     );
 
     const unsubscribe = onSnapshot(
@@ -85,6 +86,10 @@ export default function HistoryPage() {
         querySnapshot.forEach(doc => {
           paymentHistory.push({ id: doc.id, ...doc.data() } as Payment);
         });
+        
+        // Sort payments by submittedAt date in descending order
+        paymentHistory.sort((a, b) => b.submittedAt.seconds - a.submittedAt.seconds);
+
         setPayments(paymentHistory);
         setLoading(false);
       },
@@ -142,7 +147,7 @@ export default function HistoryPage() {
             <Card key={payment.id} className={cn('overflow-hidden border-l-4', config.className)}>
               <div className="flex">
                 <div className={cn('flex w-16 items-center justify-center', config.bgClassName)}>
-                   <Icon className={cn('h-8 w-8', config.className)} />
+                   <Icon className={cn('h-8 w-8', config.className.replace('border-', 'text-'))} />
                 </div>
                 <div className="flex-1">
                   <CardHeader className="p-4 pb-2">
