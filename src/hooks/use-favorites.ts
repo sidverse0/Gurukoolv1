@@ -1,53 +1,70 @@
-
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import type { Video } from '@/lib/types';
-
-const FAVORITES_KEY = 'edustream_favorites';
+import { useAuth } from '@/contexts/auth-context';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 
 export function useFavorites() {
+  const { user } = useAuth();
   const [favorites, setFavorites] = useState<Video[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  // Load favorites from Firestore
   useEffect(() => {
-    try {
-      const item = window.localStorage.getItem(FAVORITES_KEY);
-      if (item) {
-        setFavorites(JSON.parse(item));
-      }
-    } catch (error) {
-      console.warn('Could not read favorites from localStorage', error);
+    if (!user) {
       setFavorites([]);
+      setIsLoaded(true);
+      return;
     }
-    setIsLoaded(true);
-  }, []);
 
-  useEffect(() => {
-    if (isLoaded) {
-      try {
-        window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-      } catch (error) {
-        console.warn('Could not save favorites to localStorage', error);
+    setIsLoaded(false);
+    const docRef = doc(db, 'favorites', user.uid);
+    
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setFavorites(docSnap.data().videos || []);
+      } else {
+        setFavorites([]);
       }
-    }
-  }, [favorites, isLoaded]);
+      setIsLoaded(true);
+    }, (error) => {
+      console.warn('Could not read favorites from Firestore', error);
+      setIsLoaded(true);
+    });
 
-  const addFavorite = useCallback((video: Video) => {
+    return () => unsubscribe();
+
+  }, [user]);
+
+  // Function to update Firestore
+  const updateFirestoreFavorites = async (updatedFavorites: Video[]) => {
+    if (!user) return;
+    try {
+      const docRef = doc(db, 'favorites', user.uid);
+      await setDoc(docRef, { videos: updatedFavorites });
+    } catch (error) {
+      console.warn('Could not save favorites to Firestore', error);
+    }
+  };
+
+  const addFavorite = useCallback(async (video: Video) => {
+    const newFavorites = [...favorites, video];
     setFavorites(prevFavorites => {
-      // Avoid adding duplicates
       if (prevFavorites.some(fav => fav.video_url === video.video_url)) {
         return prevFavorites;
       }
       return [...prevFavorites, video];
     });
-  }, []);
+    await updateFirestoreFavorites(newFavorites);
+  }, [favorites, user]);
 
-  const removeFavorite = useCallback((video: Video) => {
-    setFavorites(prevFavorites =>
-      prevFavorites.filter(fav => fav.video_url !== video.video_url)
-    );
-  }, []);
+  const removeFavorite = useCallback(async (video: Video) => {
+    const newFavorites = favorites.filter(fav => fav.video_url !== video.video_url);
+    setFavorites(newFavorites);
+    await updateFirestore_Favorites(newFavorites);
+  }, [favorites, user]);
 
   const isFavorite = useCallback(
     (video: Video) => {

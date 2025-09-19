@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useFavorites } from '@/hooks/use-favorites';
+import { useAuth } from '@/contexts/auth-context';
 
 function constructVideoUrl(video: Video) {
   const baseUrl = `/videos/${encodeURIComponent(
@@ -31,6 +32,7 @@ function constructVideoUrl(video: Video) {
 }
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [continueLearningVideos, setContinueLearningVideos] = useState<Video[]>(
     []
   );
@@ -53,7 +55,7 @@ export default function HomePage() {
       {/* Welcome Banner */}
       <div className="mb-8 rounded-lg bg-primary/10 p-6 text-center">
         <h1 className="font-headline text-2xl font-bold tracking-tight text-primary md:text-3xl">
-          Welcome Back, Guest User!
+          Welcome Back, {user?.email?.split('@')[0] || 'Guest'}!
         </h1>
         <div className="mt-4 flex flex-col items-center justify-center">
           <Quote className="h-6 w-6 text-primary/50" />
