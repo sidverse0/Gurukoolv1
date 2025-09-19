@@ -5,12 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getBatchDetails } from '@/lib/data';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clapperboard, FileText, Search } from 'lucide-react';
 import { VideoPlayer } from '@/components/video-player';
@@ -22,7 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useEffect, useState } from 'react';
-import type { SubjectDetails, Video, Note } from '@/lib/types';
+import type { SubjectDetails, Video } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -50,7 +44,7 @@ export default function BatchDetailsPage({
 }: {
   params: { batchId: string };
 }) {
-  const batchId = params.batchId;
+  const { batchId } = params;
   const [batchDetails, setBatchDetails] = useState<SubjectDetails | null>(null);
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -197,13 +191,13 @@ export default function BatchDetailsPage({
                               : 'View Notes'}
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="h-screen max-h-[95vh] w-screen max-w-[95vw] p-0">
-                          <DialogHeader className="p-4">
+                        <DialogContent className="h-screen max-h-[95svh] w-screen max-w-[95vw] flex flex-col p-0">
+                          <DialogHeader className="p-4 border-b">
                             <DialogTitle className="font-headline">
                               {note.title}
                             </DialogTitle>
                           </DialogHeader>
-                          <div className="h-full w-full flex-1">
+                          <div className="flex-1">
                             <iframe
                               src={note.url}
                               className="h-full w-full border-0"
