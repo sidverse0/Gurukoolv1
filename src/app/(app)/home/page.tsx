@@ -8,15 +8,17 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getSubjectLectures } from '@/lib/data';
-import type { Video } from '@/lib/types';
-import { ArrowRight, Play, Quote, Heart } from 'lucide-react';
+import { getSubjectLectures, getBatches } from '@/lib/data';
+import type { Video, Batch } from '@/lib/types';
+import { ArrowRight, Play, Quote, Heart, BookOpen } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useFavorites } from '@/hooks/use-favorites';
 import { useAuth } from '@/contexts/auth-context';
 import { Skeleton } from '@/components/ui/skeleton';
+import { usePurchases } from '@/hooks/use-purchases';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 function constructVideoUrl(video: Video) {
   const baseUrl = `/videos/${encodeURIComponent(
@@ -45,6 +47,18 @@ function VideoCardSkeleton() {
   )
 }
 
+function BatchCardSkeleton() {
+  return (
+    <Card className="group overflow-hidden">
+      <Skeleton className="h-40 w-full" />
+      <CardHeader className="p-4">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4 mt-2" />
+      </CardHeader>
+    </Card>
+  )
+}
+
 export default function HomePage() {
   const { user } = useAuth();
   const [continueLearningVideos, setContinueLearningVideos] = useState<Video[]>(
@@ -52,6 +66,9 @@ export default function HomePage() {
   );
   const [loading, setLoading] = useState(true);
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
+  const { purchasedBatchIds, isLoaded: purchasesLoaded } = usePurchases();
+  const [purchasedBatches, setPurchasedBatches] = useState<Batch[]>([]);
+  const [loadingBatches, setLoadingBatches] = useState(true);
 
   useEffect(() => {
     async function fetchContinueLearning() {
@@ -64,7 +81,23 @@ export default function HomePage() {
     fetchContinueLearning();
   }, []);
 
-  const isLoading = loading || !favoritesLoaded;
+  useEffect(() => {
+    async function fetchPurchasedBatches() {
+      if (!purchasesLoaded) return;
+      setLoadingBatches(true);
+      const allBatches = await getBatches();
+      const userBatches = allBatches.filter(batch => purchasedBatchIds.includes(batch.id));
+      setPurchasedBatches(userBatches);
+      setLoadingBatches(false);
+    }
+    fetchPurchasedBatches();
+  }, [purchasedBatchIds, purchasesLoaded]);
+  
+  const getImage = (thumbnailId: string) => {
+    return PlaceHolderImages.find(img => img.id === thumbnailId);
+  };
+
+  const isLoading = loading || !favoritesLoaded || !purchasesLoaded || loadingBatches;
 
   return (
     <div className="container mx-auto">
@@ -85,6 +118,73 @@ export default function HomePage() {
       </div>
 
       <div className="space-y-8">
+
+         {/* My Batches Section */}
+        <section>
+          <h2 className="mb-4 font-headline text-2xl font-semibold">
+            My Batches
+          </h2>
+          {isLoading ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <BatchCardSkeleton />
+              <BatchCardSkeleton />
+            </div>
+          ) : purchasedBatches.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {purchasedBatches.map(batch => {
+                const image = getImage(batch.thumbnailId);
+                return (
+                <Card
+                  key={batch.id}
+                  className="group overflow-hidden transition-transform duration-300 hover:scale-105"
+                >
+                  <div className="relative h-40 w-full">
+                    <Image
+                      src={image?.imageUrl || 'https://picsum.photos/seed/batch/600/400'}
+                      alt={batch.title}
+                      fill
+                      className="object-cover"
+                      data-ai-hint={image?.imageHint}
+                    />
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                     <div className="absolute bottom-2 left-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="h-8 bg-white/80 text-xs text-black backdrop-blur-sm hover:bg-white"
+                          asChild
+                        >
+                          <Link href={`/batches/${batch.id}`}>
+                            <BookOpen className="mr-1.5 h-4 w-4" />
+                            Open
+                          </Link>
+                        </Button>
+                      </div>
+                  </div>
+                  <CardHeader className="p-4">
+                    <CardTitle className="line-clamp-2 h-12 font-body text-base font-bold">
+                      {batch.title}
+                    </CardTitle>
+                     {batch.instructor && (
+                      <CardDescription className='text-xs'>By {batch.instructor}</CardDescription>
+                    )}
+                  </CardHeader>
+                </Card>
+              )})}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+                <BookOpen className="h-10 w-10 text-muted-foreground" />
+                <h3 className="mt-4 font-semibold">No Purchased Batches</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Your purchased batches will appear here.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </section>
+
         {/* My Favorites Section */}
         <section>
           <h2 className="mb-4 font-headline text-2xl font-semibold">

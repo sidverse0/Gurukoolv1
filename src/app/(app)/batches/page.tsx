@@ -19,6 +19,7 @@ import type { Batch } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { usePurchases } from '@/hooks/use-purchases';
 
 function BatchCardSkeleton() {
   return (
@@ -38,6 +39,7 @@ export default function BatchesPage() {
   const [filteredBatches, setFilteredBatches] = useState<Batch[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const { purchasedBatchIds, isLoaded: purchasesLoaded } = usePurchases();
 
   useEffect(() => {
     async function fetchBatches() {
@@ -73,6 +75,8 @@ export default function BatchesPage() {
   const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
   const batchPrice = '199';
 
+  const isLoading = loading || !purchasesLoaded;
+
 
   return (
     <div className="container mx-auto">
@@ -91,7 +95,7 @@ export default function BatchesPage() {
           />
         </div>
       </div>
-      {loading ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <BatchCardSkeleton />
           <BatchCardSkeleton />
@@ -102,6 +106,8 @@ export default function BatchesPage() {
           {filteredBatches.map((batch, index) => {
             const image = getImage(batch.thumbnailId);
             const paid = isPaidBatch(batch);
+            const purchased = purchasedBatchIds.includes(batch.id);
+            const showBuyButton = paid && !purchased;
 
             return (
               <Card
@@ -147,7 +153,7 @@ export default function BatchesPage() {
                   )}
                 </CardContent>
                 <CardFooter>
-                  {paid ? (
+                  {showBuyButton ? (
                      <Button asChild className="w-full">
                         <Link href={`/buy/${batch.id}`}>
                           <Lock className="mr-2" />
