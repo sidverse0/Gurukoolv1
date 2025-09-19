@@ -86,14 +86,7 @@ export default function BatchDetailsPage() {
         </Link>
       </Button>
 
-      <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-        {batchDetails.batch_info.title}
-      </h1>
-      <p className="mb-8 text-muted-foreground">
-        Please select a subject to start learning.
-      </p>
-
-      <div className="space-y-4">
+      <div className="space-y-4 pt-4">
         {batchDetails.subjects.map(subject => (
           <Link
             href={`/batches/${batchId}/${subject.id}`}
