@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
-import { Loader2 } from 'lucide-react';
+import { PageLoader } from '@/components/page-loader';
 
 export default function RootPage() {
   const { user, loading } = useAuth();
@@ -19,9 +19,5 @@ export default function RootPage() {
     }
   }, [user, loading, router]);
 
-  return (
-    <div className="flex h-screen items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin" />
-    </div>
-  );
+  return <PageLoader />;
 }
