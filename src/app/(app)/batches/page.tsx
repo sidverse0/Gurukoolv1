@@ -38,7 +38,7 @@ export default async function BatchesPage() {
               className="flex transform flex-col overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
             >
               {image && (
-                <div className="relative h-48 w-full">
+                <div className="relative h-40 w-full">
                   <Image
                     src={image.imageUrl}
                     alt={batch.title}
@@ -49,19 +49,14 @@ export default async function BatchesPage() {
                 </div>
               )}
               <CardHeader>
-                <CardTitle className="font-headline text-xl">
+                <CardTitle className="font-body text-lg font-bold">
                   {batch.title}
                 </CardTitle>
                 {batch.instructor && (
                   <CardDescription>By {batch.instructor}</CardDescription>
                 )}
               </CardHeader>
-              <CardContent className="flex-grow space-y-4">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <BookCopy className="mr-2 h-4 w-4" />
-                  <span>{batch.subjects?.length ?? 0} Subjects</span>
-                </div>
-              </CardContent>
+              <CardContent className="flex-grow space-y-4"></CardContent>
               <CardFooter>
                 <Button asChild className="w-full">
                   <Link href={`/batches/${batch.id}`}>
