@@ -1,8 +1,7 @@
 export const BATCHES = [
   {
     id: 'bpsc70',
-    jsonUrl:
-      'https://drive.google.com/uc?id=14797mbXg9dXYFOKKbcWb6GHcLV8JustP',
+    jsonUrl: '', // Will use local file
   },
   {
     id: 'ethics',

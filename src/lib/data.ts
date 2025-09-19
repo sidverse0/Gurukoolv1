@@ -1,7 +1,12 @@
-
 import type { Batch, BatchDetails, SubjectLectures, Subject } from '@/lib/types';
 import { BATCHES } from '@/config';
 import UPSC_287_DATA from '@/data/upsc-287.json';
+import BPSC_70_DATA from '@/data/bpsc70.json';
+
+const localBatchData: { [key: string]: any } = {
+  'upsc-287': UPSC_287_DATA,
+  'bpsc70': BPSC_70_DATA,
+};
 
 async function fetchJsonData(url: string): Promise<any> {
   if (!url || url.includes('YOUR_FILE_ID') || url.includes('YOUR_SUBJECT_FILE_ID')) {
@@ -28,9 +33,9 @@ export async function getBatches(): Promise<Batch[]> {
   const enrichedBatches = await Promise.all(
     batchConfigs.map(async batchConfig => {
       let data;
-      if (batchConfig.id === 'upsc-287' && !batchConfig.jsonUrl) {
-         data = UPSC_287_DATA;
-      } else if (batchConfig.jsonUrl) {
+      if (!batchConfig.jsonUrl) {
+        data = localBatchData[batchConfig.id];
+      } else {
         data = await fetchJsonData(batchConfig.jsonUrl);
       }
 
@@ -59,8 +64,8 @@ export async function getBatchDetails(batchId: string): Promise<BatchDetails | n
     return null;
   }
   
-  if (batchId === 'upsc-287' && !batchConfig.jsonUrl) {
-    return UPSC_287_DATA as BatchDetails;
+  if (!batchConfig.jsonUrl) {
+    return localBatchData[batchId] as BatchDetails;
   }
   
   const data = await fetchJsonData(batchConfig.jsonUrl);
@@ -114,4 +119,3 @@ export async function getSubjectLectures(
     videos: [],
   };
 }
-
