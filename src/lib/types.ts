@@ -4,7 +4,6 @@ export interface Batch {
   description: string;
   instructor: string;
   thumbnailId: string;
-  jsonUrl: string;
   subjects: Subject[];
 }
 
@@ -28,7 +27,6 @@ export interface Subject {
   id: number;
   video_count: number;
   note_count: number;
-  jsonUrl: string; // URL to fetch detailed lecture list for this subject
 }
 
 export interface BatchInfo {
