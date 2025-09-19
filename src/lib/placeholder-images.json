@@ -42,6 +42,12 @@
       "description": "Thumbnail for BPSC Mentorship Programme",
       "imageUrl": "https://picsum.photos/seed/bpscmentor/600/400",
       "imageHint": "mentorship classroom"
+    },
+    {
+      "id": "upsc-287-thumb",
+      "description": "Thumbnail for UPSC Foundation Batch 2025",
+      "imageUrl": "https://picsum.photos/seed/upsc287/600/400",
+      "imageHint": "government building"
     }
   ]
 }
