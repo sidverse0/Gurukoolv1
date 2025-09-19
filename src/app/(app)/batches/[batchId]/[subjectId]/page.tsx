@@ -2,11 +2,16 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { getSubjectLectures } from '@/lib/data';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clapperboard, FileText, Search } from 'lucide-react';
-import { VideoPlayer } from '@/components/video-player';
+import {
+  ArrowLeft,
+  Clapperboard,
+  FileText,
+  Play,
+  Search,
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -38,12 +43,10 @@ function LectureSkeleton() {
   );
 }
 
-export default function SubjectLecturesPage({
-  params,
-}: {
-  params: { batchId: string; subjectId: string };
-}) {
-  const { batchId, subjectId } = params;
+export default function SubjectLecturesPage() {
+  const params = useParams();
+  const batchId = params.batchId as string;
+  const subjectId = params.subjectId as string;
   const [subjectDetails, setSubjectDetails] = useState<SubjectLectures | null>(
     null
   );
@@ -165,22 +168,18 @@ export default function SubjectLecturesPage({
                   {video.title}
                 </h3>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>
-                        <Clapperboard className="mr-2 h-4 w-4" />
-                        Play Video
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-3xl">
-                      <DialogHeader>
-                        <DialogTitle className="font-headline">
-                          {video.title}
-                        </DialogTitle>
-                      </DialogHeader>
-                      <VideoPlayer videoUrl={video.video_url} />
-                    </DialogContent>
-                  </Dialog>
+                  <Button asChild>
+                    <Link
+                      href={`/videos/${encodeURIComponent(
+                        video.video_url
+                      )}?title=${encodeURIComponent(
+                        video.title
+                      )}&date=${encodeURIComponent(video.published_date)}`}
+                    >
+                      <Play className="mr-2 h-4 w-4" />
+                      Play Video
+                    </Link>
+                  </Button>
                   {video.notes &&
                     video.notes.map((note, index) => (
                       <Dialog key={index}>
