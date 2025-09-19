@@ -16,5 +16,8 @@ export const BATCHES = [
   },
   {
     id: 'bpsc-71-569',
+  },
+  {
+    id: 'bpsc-71-411',
   }
 ];
