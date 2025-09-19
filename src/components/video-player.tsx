@@ -130,10 +130,10 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       setPlayed(newPlayed[0]);
   }
   
-  const handleSeekMouseUp = () => {
+  const handleSeekMouseUp = (newPlayed: number[]) => {
     setSeeking(false);
     if(playerRef.current){
-      playerRef.current.seekTo(played);
+      playerRef.current.seekTo(newPlayed[0]);
     }
   };
 
@@ -256,7 +256,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 value={[played]}
                 onValueChange={handleSeekChange}
                 onMouseDown={handleSeekMouseDown}
-                onPointerUp={handleSeekMouseUp}
+                onValueCommit={handleSeekMouseUp}
                 className="w-full h-2 group"
               />
               <span className="text-xs font-mono">{formatDuration(duration)}</span>
@@ -309,3 +309,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
+
+    
+
+    
