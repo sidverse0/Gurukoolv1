@@ -19,6 +19,13 @@ import {
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 function VideoPlayerContent() {
   const searchParams = useSearchParams();
@@ -28,6 +35,8 @@ function VideoPlayerContent() {
   const videoId = params.videoId as string;
   const title = searchParams.get('title');
   const date = searchParams.get('date');
+  const noteUrl = searchParams.get('noteUrl');
+  const noteTitle = searchParams.get('noteTitle');
 
   const videoUrl = decodeURIComponent(videoId);
 
@@ -69,10 +78,45 @@ function VideoPlayerContent() {
               <Star className="mr-2" />
               Rate
             </Button>
-            <Button variant="ghost" className="text-muted-foreground">
-              <FileText className="mr-2" />
-              Notes
-            </Button>
+            {noteUrl ? (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="text-muted-foreground">
+                    <FileText className="mr-2" />
+                    Notes
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="h-screen max-h-[95svh] w-screen max-w-[95vw] flex flex-col p-0">
+                  <DialogHeader className="p-4 border-b">
+                    <DialogTitle className="font-headline">
+                      {noteTitle
+                        ? decodeURIComponent(noteTitle)
+                        : 'Lecture Notes'}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="flex-1">
+                    <iframe
+                      src={decodeURIComponent(noteUrl)}
+                      className="h-full w-full border-0"
+                      title={
+                        noteTitle
+                          ? decodeURIComponent(noteTitle)
+                          : 'Lecture Notes'
+                      }
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Button
+                variant="ghost"
+                className="text-muted-foreground"
+                disabled
+              >
+                <FileText className="mr-2" />
+                Notes
+              </Button>
+            )}
           </div>
         </div>
       </div>

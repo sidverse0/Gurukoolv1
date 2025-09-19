@@ -93,9 +93,6 @@ export default function SubjectLecturesPage() {
     return (
       <div className="container mx-auto max-w-4xl">
         <Skeleton className="mb-4 h-8 w-40" />
-        <Skeleton className="mb-2 h-10 w-3/4" />
-        <Skeleton className="mb-4 h-5 w-1/2" />
-        <Skeleton className="mb-8 h-12 w-full" />
         <div className="space-y-4">
           <LectureSkeleton />
           <LectureSkeleton />
@@ -107,6 +104,20 @@ export default function SubjectLecturesPage() {
   if (!subjectDetails) {
     return notFound();
   }
+
+  const constructVideoUrl = (video: Video) => {
+    const baseUrl = `/videos/${encodeURIComponent(
+      video.video_url
+    )}?title=${encodeURIComponent(video.title)}&date=${encodeURIComponent(
+      video.published_date
+    )}`;
+    if (video.notes && video.notes.length > 0) {
+      return `${baseUrl}&noteUrl=${encodeURIComponent(
+        video.notes[0].url
+      )}&noteTitle=${encodeURIComponent(video.notes[0].title)}`;
+    }
+    return baseUrl;
+  };
 
   return (
     <div className="container mx-auto max-w-4xl">
@@ -156,44 +167,11 @@ export default function SubjectLecturesPage() {
                 </h3>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Button asChild>
-                    <Link
-                      href={`/videos/${encodeURIComponent(
-                        video.video_url
-                      )}?title=${encodeURIComponent(
-                        video.title
-                      )}&date=${encodeURIComponent(video.published_date)}`}
-                    >
+                    <Link href={constructVideoUrl(video)}>
                       <Play className="mr-2 h-4 w-4" />
                       Play Video
                     </Link>
                   </Button>
-                  {video.notes &&
-                    video.notes.map((note, index) => (
-                      <Dialog key={index}>
-                        <DialogTrigger asChild>
-                          <Button variant="outline">
-                            <FileText className="mr-2 h-4 w-4" />
-                            {video.notes.length > 1
-                              ? `Note ${index + 1}`
-                              : 'View Notes'}
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="h-screen max-h-[95svh] w-screen max-w-[95vw] flex flex-col p-0">
-                          <DialogHeader className="p-4 border-b">
-                            <DialogTitle className="font-headline">
-                              {note.title}
-                            </DialogTitle>
-                          </DialogHeader>
-                          <div className="flex-1">
-                            <iframe
-                              src={note.url}
-                              className="h-full w-full border-0"
-                              title={note.title}
-                            />
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    ))}
                 </div>
               </div>
             </div>
