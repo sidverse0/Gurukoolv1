@@ -52,8 +52,7 @@ export default function SearchPage() {
       <div className="flex flex-col items-center justify-center text-center">
         <Avatar className="h-24 w-24 border-4 border-primary/50 shadow-lg">
           <AvatarImage
-            src="https://picsum.photos/seed/ai-guruji/200"
-            data-ai-hint="friendly robot"
+            src="https://files.catbox.moe/cof2ei.jpg"
           />
           <AvatarFallback>AI</AvatarFallback>
         </Avatar>
