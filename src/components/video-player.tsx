@@ -77,7 +77,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const hideControls = () => {
-    if (playing && !seeking) {
+    if (playing) {
       setControlsVisible(false);
     }
   };
@@ -118,7 +118,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   }, []);
 
   useEffect(() => {
-    if (playing && !seeking) {
+    if (playing) {
       showControls();
     } else {
       if (controlsTimeoutRef.current) {
@@ -127,7 +127,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       setControlsVisible(true);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, seeking]);
+  }, [playing]);
 
   const handleSuggestResolution = async () => {
     setIsLoading(true);
@@ -208,10 +208,10 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   }
 
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest('.player-controls')) {
-      return;
+    // Only toggle controls if the click is on the container itself, not on the controls overlay
+    if ((e.target as HTMLElement).isSameNode(e.currentTarget as HTMLElement) || (e.target as HTMLElement).closest('.react-player__preview')) {
+       toggleControls();
     }
-    toggleControls();
   }
 
 
@@ -257,15 +257,16 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             "player-controls absolute inset-0 flex items-center justify-center bg-transparent transition-opacity duration-300",
             controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
           )}
+          onClick={(e) => e.stopPropagation()} // Stop propagation to prevent container click
         >
            <div className="flex items-center justify-center gap-8 md:gap-16">
-            <Button onClick={(e) => {e.stopPropagation(); handleSeek(-10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
+            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
               <RotateCcw className="h-8 w-8" />
             </Button>
-            <Button onClick={(e) => {e.stopPropagation(); handlePlayPause();}} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
+            <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
               {playing ? <Pause className="h-12 w-12" /> : <Play className="h-12 w-12" />}
             </Button>
-             <Button onClick={(e) => {e.stopPropagation(); handleSeek(10);}} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
+             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-transparent hover:bg-transparent hover:text-white">
               <RotateCw className="h-8 w-8" />
             </Button>
           </div>
@@ -274,7 +275,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         <div className={cn(
           "player-controls absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/30 to-transparent",
           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}>
+        )} onClick={(e) => e.stopPropagation()}>
           <div className="flex flex-col gap-2 text-white">
              <div className="flex items-center justify-between text-xs font-mono px-1">
                 <span>{formatDuration(played * duration)}</span>
@@ -290,9 +291,8 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 onMouseDown={handleSeekMouseDown}
                 onPointerUp={handleSeekMouseUp}
                 className="w-full h-2 group"
-                onClick={e => e.stopPropagation()}
               />
-              <Button onClick={(e) => {e.stopPropagation(); handleToggleFullscreen();}} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
+              <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
                 {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
               </Button>
             </div>
@@ -302,14 +302,14 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         <div className={cn(
           "player-controls absolute top-0 right-0 p-3 transition-opacity duration-300",
            controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}>
+        )} onClick={(e) => e.stopPropagation()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button onClick={e => e.stopPropagation()} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
+              <Button variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
                 <Settings className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent onClick={e => e.stopPropagation()} className="w-48 bg-black/80 border-white/20 text-white p-2 mb-2 mr-2">
+            <DropdownMenuContent className="w-48 bg-black/80 border-white/20 text-white p-2 mb-2 mr-2">
               <DropdownMenuGroup>
                 <p className='px-2 py-1.5 text-xs font-semibold'>Playback Speed</p>
                 <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
