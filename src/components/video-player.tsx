@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -17,25 +18,26 @@ import {
   Sparkles,
   Play,
   Pause,
-  RotateCcw,
-  RotateCw,
-  Gauge,
   Maximize,
   Minimize,
   Volume2,
   VolumeX,
+  Settings,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Slider } from './ui/slider';
 import { cn } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -81,6 +83,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     const handleFullscreenChange = () => {
       const isFs = !!document.fullscreenElement;
       setFullscreen(isFs);
+      if (!isFs) {
+        try {
+          screen.orientation.unlock();
+        } catch (e) {
+          console.warn("Could not unlock screen orientation:", e);
+        }
+      }
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -110,8 +119,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   };
   
   const handlePlayPause = () => setPlaying(!playing);
-  const handleRewind = () => playerRef.current?.seekTo(played * duration - 10);
-  const handleFastForward = () => playerRef.current?.seekTo(played * duration + 10);
   
   const handleProgress = (state: OnProgressProps) => {
     if (!seeking) {
@@ -127,17 +134,22 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     playerRef.current?.seekTo(newPlayed[0]);
   };
 
-  const handleToggleFullscreen = () => {
+  const handleToggleFullscreen = async () => {
     const container = playerContainerRef.current;
     if (!container) return;
 
     if (!document.fullscreenElement) {
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
+      try {
+        await container.requestFullscreen();
+        await screen.orientation.lock('landscape');
+      } catch (err) {
+        console.error("Fullscreen or orientation lock failed:", err);
       }
     } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
+      try {
+        await document.exitFullscreen();
+      } catch (err) {
+        console.error("Exit fullscreen failed:", err);
       }
     }
   };
@@ -159,6 +171,10 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     }
   };
 
+  const handleVolumeChange = (newVolume: number[]) => {
+    setVolume(newVolume[0]);
+    setMuted(newVolume[0] === 0);
+  };
 
   return (
     <div className="space-y-4">
@@ -175,7 +191,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             width="100%"
             height="100%"
             playing={playing}
-            played={played}
             playbackRate={parseFloat(playbackRate)}
             volume={volume}
             muted={muted}
@@ -183,7 +198,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             onDuration={setDuration}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
-            onClick={() => setPlaying(p => !p)}
+            onClick={handlePlayPause}
             config={{
               file: {
                 attributes: {
@@ -197,70 +212,73 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         )}
         
         <div className={cn(
-          "absolute inset-0 bg-black/30 transition-opacity duration-300 flex items-center justify-center",
+          "absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300",
           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
-          {/* Main Controls */}
-          <div className="flex items-center gap-8">
-            <Button onClick={handleRewind} variant="ghost" size="icon" className="h-14 w-14 rounded-full text-white hover:bg-white/20 hover:text-white">
-              <RotateCcw className="h-8 w-8" />
-            </Button>
-            <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white hover:bg-white/20 hover:text-white">
+          {/* Main Play/Pause Button in Center */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
               {playing ? <Pause className="h-12 w-12" /> : <Play className="h-12 w-12" />}
-            </Button>
-            <Button onClick={handleFastForward} variant="ghost" size="icon" className="h-14 w-14 rounded-full text-white hover:bg-white/20 hover:text-white">
-              <RotateCw className="h-8 w-8" />
             </Button>
           </div>
 
           {/* Bottom Control Bar */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 space-y-2">
-            <div className="w-full">
+          <div className="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-2 text-white">
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-mono">{formatDuration(played * duration)}</span>
               <Slider
                 min={0}
-                max={1}
+                max={0.999999}
                 step={0.001}
                 value={[played]}
                 onValueChange={handleSeekChange}
                 onMouseDown={handleSeekMouseDown}
-                onMouseUp={handleSeekMouseUp}
+                onValueChangeCommit={handleSeekMouseUp}
                 className="w-full h-2 group"
               />
+              <span className="text-xs font-mono">{formatDuration(duration)}</span>
             </div>
-            <div className="flex items-center justify-between text-white text-sm">
-                <div className="flex items-center gap-4">
-                  <Button onClick={handlePlayPause} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
-                      {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-                  </Button>
 
-                  <Button onClick={() => setMuted(!muted)} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
-                      {muted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
-                  </Button>
-
-                  <p>
-                    {formatDuration(played * duration)} / {formatDuration(duration)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
-                          <Gauge className="h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate}>
-                          <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="1">1x (Normal)</DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="1.5">1.5x</DropdownMenuRadioItem>
-                          <DropdownMenuRadioItem value="2">2x</DropdownMenuRadioItem>
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
-                      {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-h-5" />}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
+                      <Settings className="h-5 w-5" />
                     </Button>
-                </div>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 bg-black/80 border-white/20 text-white p-2">
+                    <div className="space-y-2">
+                      <DropdownMenuLabel className='px-2 py-1.5'>Playback Speed</DropdownMenuLabel>
+                      <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
+                        <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="1">1x (Normal)</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="1.5">1.5x</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="2">2x</DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                      <DropdownMenuSeparator className='bg-white/20' />
+                       <div className='flex items-center gap-2 px-2 py-1.5'>
+                         <button onClick={() => setMuted(!muted)}>
+                           {muted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+                         </button>
+                         <Slider 
+                           min={0}
+                           max={1}
+                           step={0.05}
+                           value={[volume]}
+                           onValueChange={handleVolumeChange}
+                         />
+                       </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
+                  {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -283,3 +301,5 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
+
+    
