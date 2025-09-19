@@ -50,6 +50,7 @@ export default function BatchDetailsPage({
 }: {
   params: { batchId: string };
 }) {
+  const batchId = params.batchId;
   const [batchDetails, setBatchDetails] = useState<SubjectDetails | null>(null);
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,7 +59,7 @@ export default function BatchDetailsPage({
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const details = await getBatchDetails(params.batchId);
+      const details = await getBatchDetails(batchId);
       if (!details) {
         notFound();
       }
@@ -67,7 +68,7 @@ export default function BatchDetailsPage({
       setLoading(false);
     }
     fetchData();
-  }, [params.batchId]);
+  }, [batchId]);
 
   useEffect(() => {
     if (!batchDetails) return;
