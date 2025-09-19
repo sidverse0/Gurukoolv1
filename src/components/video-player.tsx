@@ -47,8 +47,8 @@ interface VideoPlayerProps {
 function formatDuration(seconds: number) {
   const date = new Date(seconds * 1000);
   const hh = date.getUTCHours();
-  const mm = date.getUTCMMinutes();
-  const ss = date.getUTCSSeconds().toString().padStart(2, '0');
+  const mm = date.getUTCMinutes();
+  const ss = date.getUTCSeconds().toString().padStart(2, '0');
   if (hh) {
     return `${hh}:${mm.toString().padStart(2, '0')}:${ss}`;
   }
@@ -275,19 +275,23 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           <div className="flex flex-col gap-2 text-white">
              <div className="flex items-center gap-3">
               <span className="text-xs font-mono w-12 text-center">{formatDuration(played * duration)}</span>
-              <Slider
-                min={0}
-                max={0.999999}
-                step={0.001}
-                value={[played]}
-                onValueChange={handleSeekChange}
-                onMouseDown={handleSeekMouseDown}
-                onValueChangeCommit={handleSeekMouseUp}
-                className="w-full h-2 group"
-                onClick={e => e.stopPropagation()}
-              />
-              <span className="text-xs font-mono w-12 text-center">{formatDuration(duration)}</span>
+               <div className="flex-grow" />
+               <Button onClick={(e) => {e.stopPropagation(); handleToggleFullscreen();}} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
+                {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+              </Button>
             </div>
+            <Slider
+              min={0}
+              max={0.999999}
+              step={0.001}
+              value={[played]}
+              onValueChange={handleSeekChange}
+              onMouseDown={handleSeekMouseDown}
+              onValueChangeCommit={handleSeekMouseUp}
+              className="w-full h-2 group"
+              onClick={e => e.stopPropagation()}
+            />
+             <span className="text-xs font-mono w-12 text-center -mt-2">{formatDuration(duration)}</span>
           </div>
         </div>
 
@@ -327,15 +331,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        
-        <div className={cn(
-          "player-controls absolute bottom-8 right-3 transition-opacity duration-300",
-           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}>
-           <Button onClick={(e) => {e.stopPropagation(); handleToggleFullscreen();}} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white">
-              {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
-            </Button>
-        </div>
       </div>
       <div>
         <Button onClick={handleSuggestResolution} disabled={isLoading}>
@@ -355,5 +350,3 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
-
-    
