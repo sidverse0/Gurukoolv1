@@ -24,7 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Loader2, Wallet } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
@@ -68,6 +68,7 @@ export default function BuyPage() {
   const [submissionTime, setSubmissionTime] = useState<Date | null>(null);
   
   const batchPrice = '199';
+  const upiLink = `upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`;
 
 
   useEffect(() => {
@@ -183,7 +184,7 @@ export default function BuyPage() {
               <div className="flex flex-col items-center gap-4">
                 <div className="relative aspect-square w-full max-w-[250px] rounded-lg bg-muted p-4">
                    <Image
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`}
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`}
                     alt="Payment QR Code"
                     width={250}
                     height={250}
@@ -192,8 +193,13 @@ export default function BuyPage() {
                   />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm text-muted-foreground">Scan to pay</p>
-                  <p className="font-headline text-3xl font-bold text-primary">
+                  <p className="text-sm text-muted-foreground">Scan to pay or</p>
+                  <Button asChild variant="outline" className="mt-2">
+                    <a href={upiLink}>
+                      <Wallet className="mr-2" /> Pay Now
+                    </a>
+                  </Button>
+                  <p className="mt-4 font-headline text-3xl font-bold text-primary">
                     ₹{batchPrice}
                   </p>
                 </div>
