@@ -1,276 +1,64 @@
-
 {
   "batch_info": {
-    "title": "UPSC (Pre+Mains) Foundation Batch 2025 (Hindi Medium)",
-    "id": "287",
-    "extracted_date": "2025-08-27T16:37:36.885111"
+    "title": "70th BPSC Mains Exam Mentorship Programme 2025 (Karol Bagh)",
+    "price": "2999",
+    "id": "566",
+    "extracted_date": "2025-08-27T14:30:16.921716"
   },
   "subjects": [
     {
-      "name": "Disaster Management by Shankar Jha Sir",
-      "id": 5465,
-      "video_count": 16,
-      "note_count": 16,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "World History by Sujeet Sir",
-      "id": 4207,
-      "video_count": 29,
-      "note_count": 28,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "UPSC CSAT (Reasoning) by Sanjeev Tiwari Sir",
-      "id": 4240,
-      "video_count": 29,
-      "note_count": 29,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "UPSC CSAT (Maths) by Dhrub Singh Sir",
-      "id": 4570,
-      "video_count": 43,
-      "note_count": 43,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Governance by Sanjay Thakur Sir",
-      "id": 4725,
-      "video_count": 23,
-      "note_count": 23,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Daily Practice Test",
-      "id": 4784,
-      "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Comprehension by Sanjeev Sir",
-      "id": 4958,
-      "video_count": 6,
-      "note_count": 6,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Test Series",
-      "id": 4991,
-      "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Indian Economy (Prelims) by Rameshwar Sir",
-      "id": 5039,
-      "video_count": 44,
-      "note_count": 44,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "International Relations by Dr. Rajesh Mishra Sir",
-      "id": 4164,
-      "video_count": 31,
-      "note_count": 30,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Science & Technology by Dr. Abhishek Sir",
-      "id": 5720,
-      "video_count": 35,
-      "note_count": 34,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Post Independence by Sujeet Sir",
-      "id": 6338,
-      "video_count": 9,
-      "note_count": 9,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Science & Technology (Current Updates) by Sanjay Vishwakarma Sir",
-      "id": 6985,
-      "video_count": 1,
-      "note_count": 1,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Essay by Dharmendra Kumar Sir",
-      "id": 7214,
-      "video_count": 13,
-      "note_count": 5,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Indian Geography by Sachin Arora Sir",
-      "id": 7435,
-      "video_count": 28,
-      "note_count": 28,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Indian Economy (Mains) by Rameshwar Sir",
-      "id": 7617,
-      "video_count": 31,
-      "note_count": 28,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Internal Security by Dr. S.S. Pandey Sir",
-      "id": 7623,
-      "video_count": 27,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Hindi Compulsory by Dr. Ajay Anurag Sir (Recorded)",
-      "id": 8017,
-      "video_count": 6,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "miscellaneous",
-      "id": 4011,
-      "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Ancient History by Sujeet Sir",
-      "id": 3629,
-      "video_count": 27,
-      "note_count": 27,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Ethics by Dharmendra Sir",
-      "id": 3592,
-      "video_count": 36,
-      "note_count": 33,
-      "jsonUrl": ""
-    },
-    {
-      "name": "Medieval History by Sujeet Sir",
-      "id": 4024,
-      "video_count": 20,
-      "note_count": 20,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Social Justice by Dr. S. S. Pandey Sir",
-      "id": 3350,
-      "video_count": 32,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Time Table",
-      "id": 3159,
-      "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Special Session & Announcement",
-      "id": 3122,
-      "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Useful Resources",
-      "id": 2570,
-      "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Orientation Class",
-      "id": 2329,
+      "name": "Science and Tech by Kinshuk Sir",
+      "id": 5172,
       "video_count": 2,
-      "note_count": 1,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "note_count": 2
     },
     {
-      "name": "Modern History by Sujeet Sir",
-      "id": 2410,
-      "video_count": 48,
-      "note_count": 47,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "name": "Polity by Kinshuk Sir",
+      "id": 5212,
+      "video_count": 3,
+      "note_count": 1
     },
     {
-      "name": "World Geography by Sachin Arora Sir",
-      "id": 2607,
-      "video_count": 34,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "name": "Current Affairs & IR by Arpit Sir",
+      "id": 5279,
+      "video_count": 5,
+      "note_count": 0
     },
     {
-      "name": "General Geography by Sachin Arora Sir",
-      "id": 3117,
-      "video_count": 28,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "name": "Geography by Shankar Jha Sir",
+      "id": 5425,
+      "video_count": 4,
+      "note_count": 1
     },
     {
-      "name": "Current Affairs by Jeet Sir",
-      "id": 2609,
-      "video_count": 45,
-      "note_count": 44,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "name": "Economy by Dr.  Bharat Sir",
+      "id": 5557,
+      "video_count": 8,
+      "note_count": 8
     },
     {
-      "name": "UPSC Prelims 2024 Discussion",
-      "id": 2709,
-      "video_count": 10,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "name": "History by Shankar Jha Sir",
+      "id": 5649,
+      "video_count": 4,
+      "note_count": 3
     },
     {
-      "name": "Qualifying Paper (Hindi) by Jitendra Soni Sir",
-      "id": 2932,
+      "name": "Essay by Dharmendra Sir",
+      "id": 5717,
+      "video_count": 5,
+      "note_count": 5
+    },
+    {
+      "name": "Statistics by LK Jha Sir",
+      "id": 5722,
+      "video_count": 6,
+      "note_count": 2
+    },
+    {
+      "name": "Statistics by L.K. Jha Sir",
+      "id": 5947,
       "video_count": 0,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "General Science by Kinshuk Sir",
-      "id": 2616,
-      "video_count": 17,
-      "note_count": 15,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Indian Society by Dr. S. S. Pandey Sir",
-      "id": 2959,
-      "video_count": 41,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Environment &  Ecology by Dr.Abhishek Sir",
-      "id": 3374,
-      "video_count": 34,
-      "note_count": 33,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Indian Geography by Sachin Arora Sir (Recorded)",
-      "id": 5865,
-      "video_count": 33,
-      "note_count": 0,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
-    },
-    {
-      "name": "Indian Polity by Rajesh Mishra Sir",
-      "id": 2883,
-      "video_count": 54,
-      "note_count": 52,
-      "jsonUrl": "https://drive.google.com/uc?id=YOUR_SUBJECT_FILE_ID"
+      "note_count": 0
     }
   ]
 }
