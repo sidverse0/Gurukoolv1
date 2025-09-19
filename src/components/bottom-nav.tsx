@@ -7,19 +7,19 @@ import { BookCopy, Home, Sparkles, User, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
-  { href: '/home', label: 'Home', icon: Home },
-  { href: '/batches', label: 'Batches', icon: BookCopy },
-  { href: '/search', label: 'AI Guruji', icon: Sparkles },
-  { href: '/history',label: 'History', icon: History },
-  { href: '/profile', label: 'Profile', icon: User },
+  { href: '/home', label: 'Home', icon: Home, color: 'text-sky-500' },
+  { href: '/batches', label: 'Batches', icon: BookCopy, color: 'text-rose-500' },
+  { href: '/search', label: 'AI Guruji', icon: Sparkles, color: 'text-amber-500' },
+  { href: '/history',label: 'History', icon: History, color: 'text-violet-500' },
+  { href: '/profile', label: 'Profile', icon: User, color: 'text-teal-500' },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 z-40 w-full border-t border-border/50 bg-background/90 backdrop-blur-lg md:hidden">
-      <div className="grid h-16 grid-cols-5 px-2">
+    <div className="fixed bottom-4 left-1/2 z-40 h-16 w-[95%] -translate-x-1/2 rounded-full border border-border/50 bg-background/90 shadow-lg backdrop-blur-lg md:hidden">
+      <div className="grid h-full grid-cols-5">
         {links.map(link => {
           const isActive = pathname.startsWith(link.href);
           return (
@@ -27,13 +27,22 @@ export function BottomNav() {
               key={link.href}
               href={link.href}
               className={cn(
-                'group relative flex flex-col items-center justify-center p-1 text-center text-muted-foreground transition-colors duration-300 hover:text-primary',
-                isActive && 'text-primary'
+                'group relative flex flex-col items-center justify-center text-center text-muted-foreground'
               )}
             >
-              <div className={cn('absolute top-0 h-0.5 w-0 rounded-b-full bg-primary transition-all duration-300', isActive && 'w-8')} />
-              <link.icon className="mb-1 h-6 w-6" />
-              <span className="text-xs font-medium">{link.label}</span>
+              <div className={cn(
+                'flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 group-hover:bg-muted',
+                isActive ? 'bg-muted' : 'bg-transparent'
+              )}>
+                <link.icon className={cn('h-6 w-6 transition-all duration-300', isActive ? link.color : 'text-muted-foreground', 'group-hover:' + link.color)} />
+              </div>
+              <span className={cn(
+                'text-[10px] font-medium transition-all duration-300',
+                 isActive ? 'text-foreground' : 'text-muted-foreground'
+              )}>
+                {link.label}
+              </span>
+               <div className={cn('absolute -bottom-1 h-1 w-0 rounded-full bg-primary transition-all duration-300', isActive && 'w-4')} />
             </Link>
           );
         })}
