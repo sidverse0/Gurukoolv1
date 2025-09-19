@@ -35,6 +35,9 @@ interface VideoPlayerProps {
 }
 
 function formatDuration(seconds: number) {
+  if (isNaN(seconds) || seconds < 0) {
+    return '0:00';
+  }
   const date = new Date(seconds * 1000);
   const hh = date.getUTCHours();
   const mm = date.getUTCMinutes();
@@ -69,10 +72,10 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   };
 
   const showControls = () => {
-    setControlsVisible(true);
     if (controlsTimeoutRef.current) {
       clearTimeout(controlsTimeoutRef.current);
     }
+    setControlsVisible(true);
     controlsTimeoutRef.current = setTimeout(hideControls, 3000);
   };
   
@@ -115,7 +118,9 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
-  const handlePlayPause = () => setPlaying(!playing);
+  const handlePlayPause = () => {
+    setPlaying(!playing);
+  }
   
   const handleProgress = (state: OnProgressProps) => {
     if (!seeking) {
@@ -123,14 +128,15 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     }
   };
 
-  const handleSeekMouseDown = () => {
+  const handleSeekPointerDown = () => {
     setSeeking(true);
   };
+  
   const handleSeekChange = (newPlayed: number[]) => {
       setPlayed(newPlayed[0]);
   }
   
-  const handleSeekMouseUp = (newPlayed: number[]) => {
+  const handleSeekPointerUp = (newPlayed: number[]) => {
     setSeeking(false);
     if(playerRef.current){
       playerRef.current.seekTo(newPlayed[0]);
@@ -191,8 +197,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       <div
         ref={playerContainerRef}
         className="aspect-video w-full overflow-hidden rounded-lg bg-black relative group/player"
-        onMouseMove={showControls}
-        onMouseLeave={hideControls}
         onClick={handleContainerClick}
       >
         {hasWindow ? (
@@ -230,13 +234,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           )}
         >
            <div className="flex items-center justify-center gap-8 md:gap-16">
-            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-blue-400 bg-transparent hover:bg-transparent hover:text-blue-400">
+            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/40">
               <RotateCcw className="h-8 w-8" />
             </Button>
-            <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-24 w-24 rounded-full text-red-500 bg-transparent hover:bg-transparent hover:text-red-500">
+            <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-24 w-24 rounded-full text-white bg-black/30 hover:bg-black/40">
               {playing ? <Pause className="h-16 w-16" /> : <Play className="h-16 w-16" />}
             </Button>
-             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-blue-400 bg-transparent hover:bg-transparent hover:text-blue-400">
+             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/40">
               <RotateCw className="h-8 w-8" />
             </Button>
           </div>
@@ -255,12 +259,12 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 step={0.001}
                 value={[played]}
                 onValueChange={handleSeekChange}
-                onMouseDown={handleSeekMouseDown}
-                onValueCommit={handleSeekMouseUp}
+                onPointerDown={handleSeekPointerDown}
+                onValueCommit={handleSeekPointerUp}
                 className="w-full h-2 group"
               />
               <span className="text-xs font-mono">{formatDuration(duration)}</span>
-              <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-yellow-400 hover:bg-transparent hover:text-yellow-400">
+              <Button onClick={handleToggleFullscreen} variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white/80">
                 {fullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
               </Button>
             </div>
@@ -274,7 +278,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           {!fullscreen && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-pink-400 hover:bg-transparent hover:text-pink-400">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-transparent hover:text-white/80">
                   <Settings className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -309,7 +313,3 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
-
-    
-
-    
