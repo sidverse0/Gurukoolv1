@@ -40,11 +40,10 @@ function LectureSkeleton() {
 }
 
 export default function BatchDetailsPage({
-  params,
+  params: { batchId },
 }: {
   params: { batchId: string };
 }) {
-  const { batchId } = params;
   const [batchDetails, setBatchDetails] = useState<SubjectDetails | null>(null);
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
