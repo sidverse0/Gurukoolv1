@@ -1,6 +1,5 @@
 import {
   Sidebar,
-  SidebarInset,
   SidebarProvider,
 } from '@/components/ui/sidebar';
 import { AppSidebarContent } from './app-sidebar-content';
@@ -13,12 +12,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar>
         <AppSidebarContent />
       </Sidebar>
-      <SidebarInset>
+      <div className="flex-1">
         <Header />
         <main className="min-h-screen p-4 pb-20 md:p-6 md:pb-6">
           {children}
         </main>
-      </SidebarInset>
+      </div>
       <BottomNav />
     </SidebarProvider>
   );

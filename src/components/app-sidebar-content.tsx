@@ -9,6 +9,7 @@ import {
   Home,
   Search,
   User,
+  LayoutGrid,
 } from 'lucide-react';
 
 import {
