@@ -113,10 +113,16 @@ export default function BatchesPage() {
     return PlaceHolderImages.find(img => img.id === thumbnailId);
   };
 
-  const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
-  const isPurchased = (batchId: string) => purchasedBatchIds.includes(batchId);
-  const batchPrice = '199';
+  const paidBatches: { [key: string]: string } = {
+    bpsc70: '199',
+    ethics: '299',
+  };
 
+  const isPaidBatch = (batch: Batch) => Object.keys(paidBatches).includes(batch.id);
+  const getBatchPrice = (batchId: string) => paidBatches[batchId];
+
+  const isPurchased = (batchId: string) => purchasedBatchIds.includes(batchId);
+  
   const isLoading = loading || !purchasesLoaded;
 
 
@@ -151,6 +157,7 @@ export default function BatchesPage() {
             const purchased = isPurchased(batch.id);
             const totalLectures = batch.subjects.reduce((sum, s) => sum + s.video_count, 0);
             const totalNotes = batch.subjects.reduce((sum, s) => sum + s.note_count, 0);
+            const batchPrice = getBatchPrice(batch.id);
             
             return (
               <Card

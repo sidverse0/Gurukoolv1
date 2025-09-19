@@ -53,6 +53,13 @@ function BuyPageSkeleton() {
   );
 }
 
+const paidBatches: { [key: string]: string } = {
+  bpsc70: '199',
+  ethics: '299',
+};
+
+const getBatchPrice = (batchId: string) => paidBatches[batchId] || null;
+
 export default function BuyPage() {
   const params = useParams();
   const router = useRouter();
@@ -67,8 +74,8 @@ export default function BuyPage() {
   const [showReceipt, setShowReceipt] = useState(false);
   const [submissionTime, setSubmissionTime] = useState<Date | null>(null);
   
-  const batchPrice = '199';
-  const upiLink = `upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}`;
+  const batchPrice = getBatchPrice(batchId);
+  const upiLink = batchPrice ? `upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}` : '';
 
 
   useEffect(() => {
@@ -76,7 +83,7 @@ export default function BuyPage() {
     async function fetchData() {
       setLoading(true);
       const details = await getBatchDetails(batchId);
-      if (!details) {
+      if (!details || !getBatchPrice(batchId)) {
         notFound();
       }
       setBatchDetails(details);
