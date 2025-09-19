@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Suspense, useEffect } from 'react';
+import { Suspense } from 'react';
 import {
   useSearchParams,
   useParams,
@@ -27,14 +27,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import type { Video } from '@/lib/types';
-import { useWatchHistory } from '@/hooks/use-watch-history';
 
 
 function VideoPlayerContent() {
   const searchParams = useSearchParams();
   const params = useParams();
   const router = useRouter();
-  const { addToHistory } = useWatchHistory();
 
   const videoId = params.videoId as string;
   const videoDataString = searchParams.get('videoData');
@@ -47,12 +45,6 @@ function VideoPlayerContent() {
   } catch (e) {
     console.error("Failed to parse video data", e);
   }
-
-  useEffect(() => {
-    if (video) {
-      addToHistory(video);
-    }
-  }, [video, addToHistory]);
 
   if (!video) {
     // Fallback if videoData is not available

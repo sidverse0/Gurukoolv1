@@ -22,7 +22,6 @@ import { usePurchases } from '@/hooks/use-purchases';
 import { getBatches } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
-import { useWatchHistory } from '@/hooks/use-watch-history';
 
 function constructVideoUrl(video: Video) {
   const videoObjectString = encodeURIComponent(JSON.stringify(video));
@@ -62,7 +61,6 @@ export default function HomePage() {
   const { user } = useAuth();
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
   const { purchasedBatchIds, isLoaded: purchasesLoaded } = usePurchases();
-  const { history: continueLearningVideos, isLoaded: historyLoaded } = useWatchHistory();
   const [purchasedBatches, setPurchasedBatches] = useState<Batch[]>([]);
   const [loadingBatches, setLoadingBatches] = useState(true);
 
@@ -84,7 +82,7 @@ export default function HomePage() {
   
   const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
 
-  const isLoading = !favoritesLoaded || !purchasesLoaded || loadingBatches || !historyLoaded;
+  const isLoading = !favoritesLoaded || !purchasesLoaded || loadingBatches;
 
   return (
     <div className="container mx-auto">
@@ -176,73 +174,6 @@ export default function HomePage() {
                 <Button asChild className='mt-6'>
                   <Link href="/batches">Browse Batches</Link>
                 </Button>
-              </CardContent>
-            </Card>
-          )}
-        </section>
-
-        {/* Continue Learning Section */}
-        <section>
-          <h2 className="mb-4 font-headline text-2xl font-semibold">
-            Continue Learning
-          </h2>
-          {isLoading ? (
-             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <VideoCardSkeleton />
-              <VideoCardSkeleton />
-              <VideoCardSkeleton />
-            </div>
-          ) : continueLearningVideos.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {continueLearningVideos.map(video => (
-                <Card
-                  key={video.serial}
-                  className="group overflow-hidden transition-transform duration-300 hover:scale-105"
-                >
-                  <div className="relative h-40 w-full">
-                    <Image
-                      src={
-                        video.thumbnail ||
-                        'https://picsum.photos/seed/video/600/400'
-                      }
-                      alt={video.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-2 left-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        className="h-8 bg-white/80 text-xs text-black backdrop-blur-sm hover:bg-white"
-                        asChild
-                      >
-                        <Link href={constructVideoUrl(video)}>
-                          <Play className="mr-1.5 h-4 w-4" />
-                          Resume
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                  <CardHeader className="p-4">
-                    <CardTitle className="line-clamp-2 h-12 font-body text-base font-bold">
-                      {video.title}
-                    </CardTitle>
-                    <CardDescription className="text-xs">
-                      {video.published_date}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="flex flex-col items-center justify-center p-12 text-center">
-                <History className="h-10 w-10 text-muted-foreground" />
-                <h3 className="mt-4 font-semibold">No Recently Watched Videos</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Start watching lectures and your history will appear here.
-                </p>
               </CardContent>
             </Card>
           )}
