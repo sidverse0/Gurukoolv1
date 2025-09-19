@@ -14,11 +14,10 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { getBatches, getSubjectLectures } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import type { Video } from '@/lib/types';
-import { ArrowRight, Play, Search } from 'lucide-react';
+import { ArrowRight, Play, Quote } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -41,16 +40,14 @@ export default async function HomePage() {
         <h1 className="font-headline text-2xl font-bold tracking-tight text-primary md:text-3xl">
           Welcome Back, Guest User!
         </h1>
-        <p className="mt-2 text-muted-foreground">
-          What would you like to learn today?
-        </p>
-        <div className="relative mx-auto mt-4 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search for a course or subject..."
-            className="w-full rounded-full bg-background/60 pl-10"
-          />
+        <div className="mt-4 flex flex-col items-center justify-center">
+          <Quote className="h-6 w-6 text-primary/50" />
+          <blockquote className="mt-2 max-w-lg text-center text-lg font-medium text-muted-foreground">
+            &ldquo;The only way to do great work is to love what you do.&rdquo;
+          </blockquote>
+          <p className="mt-2 text-sm font-semibold text-muted-foreground">
+            - Steve Jobs
+          </p>
         </div>
       </div>
 
