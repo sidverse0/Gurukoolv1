@@ -57,12 +57,45 @@ function BatchCardSkeleton() {
   );
 }
 
+const quotes = [
+  {
+    text: 'The only way to do great work is to love what you do.',
+    author: 'Steve Jobs',
+  },
+  {
+    text: 'Believe you can and you\'re halfway there.',
+    author: 'Theodore Roosevelt',
+  },
+  {
+    text: 'The future belongs to those who believe in the beauty of their dreams.',
+    author: 'Eleanor Roosevelt',
+  },
+  {
+    text: 'Strive not to be a success, but rather to be of value.',
+    author: 'Albert Einstein',
+  },
+  {
+    text: 'The journey of a thousand miles begins with a single step.',
+    author: 'Lao Tzu',
+  },
+];
+
 export default function HomePage() {
   const { user } = useAuth();
   const { favorites, isLoaded: favoritesLoaded } = useFavorites();
   const { purchasedBatchIds, isLoaded: purchasesLoaded } = usePurchases();
   const [purchasedBatches, setPurchasedBatches] = useState<Batch[]>([]);
   const [loadingBatches, setLoadingBatches] = useState(true);
+  const [currentQuote, setCurrentQuote] = useState(quotes[0]);
+
+  useEffect(() => {
+    const quoteInterval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * quotes.length);
+      setCurrentQuote(quotes[randomIndex]);
+    }, 10 * 60 * 1000); // 10 minutes
+
+    return () => clearInterval(quoteInterval);
+  }, []);
 
   useEffect(() => {
     async function fetchPurchasedBatches() {
@@ -94,10 +127,10 @@ export default function HomePage() {
         <div className="mt-4 flex flex-col items-center justify-center">
           <Quote className="h-6 w-6 text-primary/50" />
           <blockquote className="mt-2 max-w-lg text-center text-lg font-medium text-muted-foreground">
-            &ldquo;The only way to do great work is to love what you do.&rdquo;
+            &ldquo;{currentQuote.text}&rdquo;
           </blockquote>
           <p className="mt-2 text-sm font-semibold text-muted-foreground">
-            - Steve Jobs
+            - {currentQuote.author}
           </p>
         </div>
       </div>
