@@ -5,7 +5,7 @@ export const BATCHES = [
   },
   {
     id: 'ethics',
-    jsonUrl: 'https://drive.google.com/uc?id=YOUR_FILE_ID',
+    jsonUrl: 'https://drive.google.com/uc?id=1aPaV8wc6jhq3TjyRZeKxDu72rUqpbDx2',
   },
   {
     id: 'upsc-287',
