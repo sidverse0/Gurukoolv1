@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   useSearchParams,
@@ -27,10 +27,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
+  DialogClose,
 } from '@/components/ui/dialog';
 import type { Video } from '@/lib/types';
 import { useAuth } from '@/contexts/auth-context';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 
 function VideoPlayerContent() {
@@ -42,6 +45,13 @@ function VideoPlayerContent() {
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [dislikeCount, setDislikeCount] = useState(0);
+
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
+
 
   const videoId = params.videoId as string;
   const videoDataString = searchParams.get('videoData');
@@ -55,6 +65,13 @@ function VideoPlayerContent() {
   } catch (e) {
     console.error("Failed to parse video data", e);
   }
+
+  useEffect(() => {
+    // Simulate fetching initial counts
+    setLikeCount(Math.floor(Math.random() * 100) + 10);
+    setDislikeCount(Math.floor(Math.random() * 20) + 1);
+  }, [video?.video_url]);
+
 
   if (!video) {
     const title = searchParams.get('title');
@@ -74,39 +91,76 @@ function VideoPlayerContent() {
     }
   }
 
-  const handleInteraction = async (interaction: 'Like' | 'Dislike' | 'Rate') => {
+  const handleLike = async () => {
     if (!user || !video) return;
 
-    let message = '';
-    let emoji = '';
+    const wasLiked = liked;
+    setLiked(!wasLiked);
+    setLikeCount(prev => wasLiked ? prev - 1 : prev + 1);
 
-    if (interaction === 'Like') {
-      setLiked(true);
+    if (disliked) {
       setDisliked(false);
-      emoji = '👍';
-      message = `*Video Liked!*`;
-    } else if (interaction === 'Dislike') {
-      setDisliked(true);
+      setDislikeCount(prev => prev - 1);
+    }
+    
+    if(!wasLiked){
+      toast({
+        title: `👍 Thank you!`,
+        description: `You've liked the video.`,
+      });
+  
+      const notificationMessage = `👍 *Video Liked!* \n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
+      await fetch('/api/notify', {
+        method: 'POST',
+        body: JSON.stringify({ message: notificationMessage }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+  };
+  
+  const handleDislike = async () => {
+    if (!user || !video) return;
+
+    const wasDisliked = disliked;
+    setDisliked(!wasDisliked);
+    setDislikeCount(prev => wasDisliked ? prev - 1 : prev + 1);
+    
+    if (liked) {
       setLiked(false);
-      emoji = '👎';
-      message = `*Video Disliked!*`;
-    } else if (interaction === 'Rate') {
-      emoji = '⭐';
-      message = `*Video Rated!*`;
+      setLikeCount(prev => prev - 1);
     }
 
-    toast({
-      title: `${emoji} Thank you!`,
-      description: `You've ${interaction.toLowerCase()}d the video.`,
-    });
+    if (!wasDisliked) {
+       toast({
+        title: `👎 Thank you for your feedback!`,
+      });
 
-    const notificationMessage = `${emoji} ${message}\n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
-    await fetch('/api/notify', {
-      method: 'POST',
-      body: JSON.stringify({ message: notificationMessage }),
-      headers: { 'Content-Type': 'application/json' },
-    });
+      const notificationMessage = `👎 *Video Disliked!* \n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
+      await fetch('/api/notify', {
+        method: 'POST',
+        body: JSON.stringify({ message: notificationMessage }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
   };
+  
+  const handleRatingSubmit = async () => {
+    if (!user || !video || rating === 0) return;
+
+    toast({
+        title: `⭐ Thank you for rating!`,
+        description: `You rated this video ${rating} out of 5.`,
+    });
+    
+    const notificationMessage = `⭐ *Video Rated! (${rating}/5)* \n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
+    await fetch('/api/notify', {
+        method: 'POST',
+        body: JSON.stringify({ message: notificationMessage }),
+        headers: { 'Content-Type': 'application/json' },
+    });
+    setIsRatingDialogOpen(false);
+  };
+
 
   const videoUrlToPlay = 
     (quality === 'hd' && video.hd_video_url) 
@@ -146,27 +200,63 @@ function VideoPlayerContent() {
             <Button
               variant={liked ? 'default' : 'ghost'}
               className="text-muted-foreground"
-              onClick={() => handleInteraction('Like')}
+              onClick={handleLike}
             >
               <ThumbsUp className="mr-2" />
-              Like
+              {likeCount}
             </Button>
             <Button
               variant={disliked ? 'destructive' : 'ghost'}
               className="text-muted-foreground"
-              onClick={() => handleInteraction('Dislike')}
+              onClick={handleDislike}
             >
               <ThumbsDown className="mr-2" />
-              Dislike
+              {dislikeCount}
             </Button>
-            <Button
-              variant="ghost"
-              className="text-muted-foreground"
-              onClick={() => handleInteraction('Rate')}
-            >
-              <Star className="mr-2" />
-              Rate
-            </Button>
+            
+            <Dialog open={isRatingDialogOpen} onOpenChange={setIsRatingDialogOpen}>
+                <DialogTrigger asChild>
+                    <Button
+                    variant="ghost"
+                    className="text-muted-foreground"
+                    >
+                    <Star className="mr-2" />
+                    Rate
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                    <DialogTitle>Rate this video</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex justify-center py-4">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                            key={star}
+                            className={cn(
+                                "h-10 w-10 cursor-pointer",
+                                (hoverRating || rating) >= star
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-300"
+                            )}
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            onClick={() => setRating(star)}
+                            />
+                        ))}
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                            Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button onClick={handleRatingSubmit} disabled={rating === 0}>
+                            Submit
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             {video.notes && video.notes.length > 0 ? (
               <Dialog>
                 <DialogTrigger asChild>
@@ -240,3 +330,5 @@ export default function VideoPage() {
     </Suspense>
   );
 }
+
+    
