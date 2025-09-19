@@ -21,6 +21,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, CheckCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/auth-context';
+import { db } from '@/lib/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+
 
 function BuyPageSkeleton() {
   return (
@@ -46,6 +50,7 @@ function BuyPageSkeleton() {
 export default function BuyPage() {
   const params = useParams();
   const router = useRouter();
+  const { user } = useAuth();
   const batchId = params.batchId as string;
   const { toast } = useToast();
 
@@ -81,19 +86,44 @@ export default function BuyPage() {
       });
       return;
     }
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Not Logged In',
+        description: 'You must be logged in to make a purchase.',
+      });
+      return;
+    }
+
     setSubmitting(true);
-    // TODO: Firestore logic to save pending payment
-    console.log('Submitting UTR:', utr, 'for batch:', batchId);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    toast({
-      title: 'Payment Submitted!',
-      description: 'Your payment is being verified. You will be notified once it is confirmed.',
-    });
-    router.push('/batches');
-    setSubmitting(false);
+    try {
+      const paymentRef = doc(db, 'payments', `${user.uid}_${batchId}`);
+      await setDoc(paymentRef, {
+        userId: user.uid,
+        batchId: batchId,
+        utr: utr,
+        price: batchPrice,
+        status: 'pending',
+        submittedAt: serverTimestamp(),
+      });
+
+      toast({
+        title: 'Payment Submitted!',
+        description: 'Your payment is being verified. You will be notified once it is confirmed.',
+      });
+      router.push('/batches');
+
+    } catch (error) {
+      console.error('Payment Submission Error:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description: 'There was an error submitting your payment. Please try again.',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
   
   if (loading) {
