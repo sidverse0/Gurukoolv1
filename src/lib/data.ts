@@ -37,7 +37,7 @@ export async function getBatches(): Promise<Batch[]> {
       
       return {
         id: batchConfig.id,
-        title: data?.batch_info?.title || batchConfig.name,
+        title: data?.batch_info?.title || `Batch ${batchConfig.id}`, // Fetch title dynamically
         description: ``,
         instructor: '',
         thumbnailId: `${batchConfig.id}-thumb`,
@@ -71,7 +71,7 @@ export async function getBatchDetails(batchId: string): Promise<BatchDetails | n
   // Fallback if fetch fails
   return {
     batch_info: {
-      title: batchConfig.name,
+      title: `Batch ${batchId}`,
       id: batchId,
     },
     subjects: [],
