@@ -53,6 +53,12 @@
       "description": "Thumbnail for 70th BPSC Prelims Revision Batch",
       "imageUrl": "https://picsum.photos/seed/bpscrevision/600/400",
       "imageHint": "government exam"
+    },
+    {
+      "id": "bpsc-essay-556-thumb",
+      "description": "Thumbnail for 70वीं BPSC मुख्य परीक्षा निबंध बैच",
+      "imageUrl": "https://picsum.photos/seed/bpscessay/600/400",
+      "imageHint": "writing essay"
     }
   ]
 }

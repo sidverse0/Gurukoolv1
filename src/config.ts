@@ -19,4 +19,8 @@ export const BATCHES = [
     id: 'bpsc-prelims-419',
     jsonUrl: '', // Will use local file
   },
+  {
+    id: 'bpsc-essay-556',
+    jsonUrl: '', // Will use local file
+  }
 ];

@@ -6,6 +6,7 @@ import ETHICS_DATA from '@/data/ethics.json';
 import BPSC_MENTORSHIP_566_DATA from '@/data/bpsc-mentorship-566.json';
 import BPSC_PRELIMS_419_DATA from '@/data/bpsc-prelims-419.json';
 import SUBJECT_7429_DATA from '@/data/subject-7429.json';
+import BPSC_ESSAY_556_DATA from '@/data/bpsc-essay-556.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -13,6 +14,7 @@ const localBatchData: { [key: string]: any } = {
   'ethics': ETHICS_DATA,
   'bpsc-mentorship-566': BPSC_MENTORSHIP_566_DATA,
   'bpsc-prelims-419': BPSC_PRELIMS_419_DATA,
+  'bpsc-essay-556': BPSC_ESSAY_556_DATA,
 };
 
 const localSubjectData: { [key: string]: any } = {
