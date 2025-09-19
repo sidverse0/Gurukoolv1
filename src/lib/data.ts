@@ -15,6 +15,8 @@ import BPSC_72_709_DATA from '@/data/bpsc-72-709.json';
 import NEET_2025_305_DATA from '@/data/neet-2025-305.json';
 import SUBJECT_5962_DATA from '@/data/subject-5962.json';
 import SUBJECT_5216_DATA from '@/data/subject-5216.json';
+import SUBJECT_6178_DATA from '@/data/subject-6178.json';
+import SUBJECT_5877_DATA from '@/data/subject-5877.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
@@ -35,6 +37,8 @@ const localSubjectData: { [key: string]: any } = {
   '5733': SUBJECT_5733_DATA,
   '5962': SUBJECT_5962_DATA,
   '5216': SUBJECT_5216_DATA,
+  '6178': SUBJECT_6178_DATA,
+  '5877': SUBJECT_5877_DATA,
 };
 
 
