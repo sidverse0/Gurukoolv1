@@ -12,12 +12,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ArrowRight, BookCopy, Search } from 'lucide-react';
+import { ArrowRight, BookCopy, Search, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import type { Batch } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 
 function BatchCardSkeleton() {
   return (
@@ -69,6 +70,10 @@ export default function BatchesPage() {
     return PlaceHolderImages.find(img => img.id === thumbnailId);
   };
 
+  const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
+  const batchPrice = '199';
+
+
   return (
     <div className="container mx-auto">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -96,6 +101,8 @@ export default function BatchesPage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredBatches.map((batch, index) => {
             const image = getImage(batch.thumbnailId);
+            const paid = isPaidBatch(batch);
+
             return (
               <Card
                 key={batch.id}
@@ -113,8 +120,12 @@ export default function BatchesPage() {
                       />
                     </div>
                   )}
-                  <div className="absolute left-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary/80 text-primary-foreground backdrop-blur-sm">
-                    <span className="text-lg font-bold">{index + 1}</span>
+                   <div className="absolute left-2 top-2">
+                    {paid ? (
+                      <Badge variant="destructive" className="text-sm">Paid</Badge>
+                    ) : (
+                      <Badge className="text-sm">Free</Badge>
+                    )}
                   </div>
                 </div>
 
@@ -126,13 +137,30 @@ export default function BatchesPage() {
                     <CardDescription>By {batch.instructor}</CardDescription>
                   )}
                 </CardHeader>
-                <CardContent className="flex-grow space-y-4"></CardContent>
+                <CardContent className="flex-grow space-y-4">
+                   {paid && (
+                    <div className="flex items-baseline justify-center">
+                      <span className="font-headline text-4xl font-bold tracking-tight text-primary">
+                        ₹{batchPrice}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
                 <CardFooter>
-                  <Button asChild className="w-full">
-                    <Link href={`/batches/${batch.id}`}>
-                      Let's Study <ArrowRight className="ml-2" />
-                    </Link>
-                  </Button>
+                  {paid ? (
+                     <Button asChild className="w-full">
+                        <Link href={`/buy/${batch.id}`}>
+                          <Lock className="mr-2" />
+                           Buy Now
+                        </Link>
+                      </Button>
+                  ) : (
+                     <Button asChild className="w-full">
+                        <Link href={`/batches/${batch.id}`}>
+                          Let's Study <ArrowRight className="ml-2" />
+                        </Link>
+                      </Button>
+                  )}
                 </CardFooter>
               </Card>
             );
