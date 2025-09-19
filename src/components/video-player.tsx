@@ -87,7 +87,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     if (controlsTimeoutRef.current) {
       clearTimeout(controlsTimeoutRef.current);
     }
-    controlsTimeoutRef.current = setTimeout(hideControls, 3000);
+    controlsTimeoutRef.current = setTimeout(hideControls, 2000);
   };
   
   useEffect(() => {
@@ -102,7 +102,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         try {
           screen.orientation.unlock();
         } catch (e) {
-          // console.warn("Could not unlock screen orientation:", e);
+          // Can be ignored
         }
       }
     };
@@ -172,7 +172,8 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
   const handleSeek = (seconds: number) => {
     if (!duration) return;
-    const newPlayed = Math.min(Math.max(played + seconds / duration, 0), 1);
+    const newPlayedTime = (played * duration) + seconds;
+    const newPlayed = Math.min(Math.max(newPlayedTime / duration, 0), 1);
     setPlayed(newPlayed);
     playerRef.current?.seekTo(newPlayed);
   };
@@ -186,13 +187,13 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
         await container.requestFullscreen();
         await screen.orientation.lock('landscape');
       } catch (err) {
-        // console.error("Fullscreen or orientation lock failed:", err);
+        // Can be ignored
       }
     } else {
       try {
         await document.exitFullscreen();
       } catch (err) {
-        // console.error("Exit fullscreen failed:", err);
+        // Can be ignored
       }
     }
   };
@@ -206,11 +207,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     if ((e.target as HTMLElement).closest('.player-controls')) {
       return;
     }
-    if(controlsVisible) {
-      handlePlayPause();
-    } else {
-      showControls();
-    }
+    setControlsVisible(v => !v);
   }
 
 
