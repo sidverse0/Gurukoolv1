@@ -165,9 +165,7 @@ function VideoPlayerContent() {
   const videoUrlToPlay = 
     (quality === 'hd' && video.hd_video_url) 
     ? video.hd_video_url 
-    : video.video_url 
-    ? video.video_url
-    : video.hd_video_url;
+    : video.video_url;
 
   const constructHdUrl = () => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
@@ -330,5 +328,7 @@ export default function VideoPage() {
     </Suspense>
   );
 }
+
+    
 
     
