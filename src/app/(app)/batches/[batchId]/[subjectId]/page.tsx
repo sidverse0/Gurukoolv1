@@ -117,24 +117,6 @@ export default function SubjectLecturesPage() {
         </Link>
       </Button>
 
-      <h1 className="mb-2 font-headline text-3xl font-bold tracking-tight md:text-4xl">
-        {subjectDetails.subject_name}
-      </h1>
-      <p className="mb-4 text-muted-foreground">
-        Start your learning journey with the modules below.
-      </p>
-
-      <div className="relative mb-8">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search lectures and notes..."
-          className="w-full pl-10"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-        />
-      </div>
-
       {filteredVideos.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
           <Clapperboard className="h-12 w-12 text-muted-foreground" />
