@@ -3,14 +3,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookCopy, Home, Bot, User, History } from 'lucide-react';
+import { BookCopy, Home, Sparkles, User, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Icons } from './icons';
 
 const links = [
   { href: '/home', label: 'Home', icon: Home },
   { href: '/batches', label: 'Batches', icon: BookCopy },
-  { href: '/search', label: 'AI Guruji', icon: Bot },
+  { href: '/search', label: 'AI Guruji', icon: Sparkles },
   { href: '/history',label: 'History', icon: History },
   { href: '/profile', label: 'Profile', icon: User },
 ];
