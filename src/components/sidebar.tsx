@@ -24,7 +24,7 @@ export function Sidebar() {
            <div className="flex items-center h-16 px-4 gap-2 border-b border-border/50">
              <Link href="/home" className="flex items-center gap-2">
                 <Icons.Logo className="h-8 w-8 text-primary" />
-                <span className="font-headline text-xl font-bold">EduStream</span>
+                <span className="font-headline text-xl font-bold">GuruKool</span>
               </Link>
            </div>
            <nav className="flex-1 px-2 py-4 space-y-1">
