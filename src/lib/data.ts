@@ -3,7 +3,7 @@ import { BATCHES } from '@/config';
 import UPSC_287_DATA from '@/data/upsc-287.json';
 
 async function fetchJsonData(url: string): Promise<any> {
-  if (!url || url.includes('YOUR_FILE_ID')) {
+  if (!url || url.includes('YOUR_FILE_ID') || url.includes('YOUR_SUBJECT_FILE_ID')) {
     console.warn(`Skipping fetch for placeholder URL: ${url}`);
     return null;
   }
@@ -22,35 +22,27 @@ async function fetchJsonData(url: string): Promise<any> {
 
 
 export async function getBatches(): Promise<Batch[]> {
-  const batches: Batch[] = BATCHES.map(b => ({
-    id: b.id,
-    title: b.name,
-    description: ``,
-    instructor: '',
-    thumbnailId: `${b.id}-thumb`,
-    jsonUrl: b.jsonUrl,
-    subjects: []
-  }));
+  const batchConfigs = BATCHES;
 
   const enrichedBatches = await Promise.all(
-    batches.map(async batch => {
+    batchConfigs.map(async batchConfig => {
       let data;
-      if(batch.id === 'upsc-287'){
+      if(batchConfig.id === 'upsc-287'){
         data = UPSC_287_DATA;
-      } else if (batch.jsonUrl) {
-        data = await fetchJsonData(batch.jsonUrl);
+      } else if (batchConfig.jsonUrl) {
+        data = await fetchJsonData(batchConfig.jsonUrl);
       }
 
-      if (data && data.subjects) {
-        return {
-          ...batch,
-          title: data.batch_info?.title || batch.title,
-          subjects: data.subjects,
-        };
-      }
+      const subjects = data?.subjects ?? [];
+      
       return {
-        ...batch,
-        subjects: [],
+        id: batchConfig.id,
+        title: data?.batch_info?.title || batchConfig.name,
+        description: ``,
+        instructor: '',
+        thumbnailId: `${batchConfig.id}-thumb`,
+        jsonUrl: batchConfig.jsonUrl,
+        subjects: subjects,
       };
     })
   );
@@ -76,6 +68,7 @@ export async function getBatchDetails(batchId: string): Promise<BatchDetails | n
     return data as BatchDetails;
   }
 
+  // Fallback if fetch fails
   return {
     batch_info: {
       title: batchConfig.name,
@@ -99,8 +92,8 @@ export async function getSubjectLectures(
     return {
       subject_name: subjectInfo?.name || "Unknown Subject",
       subject_id: Number(subjectId),
-      video_count: 0,
-      note_count: 0,
+      video_count: subjectInfo?.video_count || 0,
+      note_count: subjectInfo?.note_count || 0,
       videos: [],
     };
   }
@@ -115,8 +108,8 @@ export async function getSubjectLectures(
   return {
     subject_name: subjectInfo.name,
     subject_id: subjectInfo.id,
-    video_count: 0,
-    note_count: 0,
+    video_count: subjectInfo.video_count,
+    note_count: subjectInfo.note_count,
     videos: [],
   };
 }
