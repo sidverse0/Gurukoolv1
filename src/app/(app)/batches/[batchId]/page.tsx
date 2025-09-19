@@ -25,6 +25,25 @@ import { useEffect, useState } from 'react';
 import type { SubjectDetails, Video, Note } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function LectureSkeleton() {
+  return (
+    <Card className="overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-3">
+        <Skeleton className="h-48 w-full md:h-full" />
+        <div className="p-4 md:col-span-2">
+          <Skeleton className="h-4 w-1/3" />
+          <Skeleton className="mt-2 h-6 w-3/4" />
+          <div className="mt-4 flex gap-2">
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
 
 export default function BatchDetailsPage({
   params,
@@ -34,15 +53,18 @@ export default function BatchDetailsPage({
   const [batchDetails, setBatchDetails] = useState<SubjectDetails | null>(null);
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       const details = await getBatchDetails(params.batchId);
       if (!details) {
         notFound();
       }
       setBatchDetails(details);
       setFilteredVideos(details.videos || []);
+      setLoading(false);
     }
     fetchData();
   }, [params.batchId]);
@@ -59,25 +81,41 @@ export default function BatchDetailsPage({
     const filtered = batchDetails.videos.filter(
       video =>
         video.title.toLowerCase().includes(lowercasedFilter) ||
-        video.notes.some(note =>
-          note.title.toLowerCase().includes(lowercasedFilter)
-        )
+        (video.notes &&
+          video.notes.some(note =>
+            note.title.toLowerCase().includes(lowercasedFilter)
+          ))
     );
     setFilteredVideos(filtered);
   }, [searchTerm, batchDetails]);
 
-  if (!batchDetails) {
+  if (loading) {
     return (
-      <div className="container mx-auto flex h-full max-w-4xl items-center justify-center">
-        <p>Loading...</p>
+      <div className="container mx-auto max-w-4xl">
+        <Skeleton className="mb-4 h-8 w-40" />
+        <Skeleton className="mb-2 h-10 w-3/4" />
+        <Skeleton className="mb-4 h-5 w-1/2" />
+        <Skeleton className="mb-8 h-12 w-full" />
+        <div className="space-y-4">
+          <LectureSkeleton />
+          <LectureSkeleton />
+          <LectureSkeleton />
+        </div>
       </div>
     );
+  }
+  if (!batchDetails) {
+    return notFound();
   }
 
   const getYoutubeId = (url: string) => {
     try {
+      if (!url) return 'qjP4D5_p-m8';
       const urlObj = new URL(url);
-      if (urlObj.hostname === 'www.youtube.com' && urlObj.pathname === '/embed/') {
+      if (
+        urlObj.hostname === 'www.youtube.com' &&
+        urlObj.pathname.startsWith('/embed/')
+      ) {
         return urlObj.pathname.split('/')[2];
       }
     } catch (e) {
@@ -163,31 +201,32 @@ export default function BatchDetailsPage({
                       <VideoPlayer videoId={getYoutubeId(video.hd_video_url)} />
                     </DialogContent>
                   </Dialog>
-                  {video.notes.map((note, index) => (
-                    <Dialog key={index}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline">
-                          <FileText className="mr-2 h-4 w-4" />
-                          {video.notes.length > 1
-                            ? `Note ${index + 1}`
-                            : 'View Notes'}
-                        </Button>
-                      </DialogTrigger>
-                       <DialogContent className="h-screen max-h-[95vh] w-screen max-w-[95vw] p-0">
-                        <DialogHeader className="p-4">
-                          <DialogTitle className="font-headline">
-                            {note.title}
-                          </DialogTitle>
-                        </DialogHeader>
-                        <div className="h-full w-full flex-1">
-                          <iframe
-                            src={note.url}
-                            className="h-full w-full border-0"
-                          />
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  ))}
+                  {video.notes &&
+                    video.notes.map((note, index) => (
+                      <Dialog key={index}>
+                        <DialogTrigger asChild>
+                          <Button variant="outline">
+                            <FileText className="mr-2 h-4 w-4" />
+                            {video.notes.length > 1
+                              ? `Note ${index + 1}`
+                              : 'View Notes'}
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="h-screen max-h-[95vh] w-screen max-w-[95vw] p-0">
+                          <DialogHeader className="p-4">
+                            <DialogTitle className="font-headline">
+                              {note.title}
+                            </DialogTitle>
+                          </DialogHeader>
+                          <div className="h-full w-full flex-1">
+                            <iframe
+                              src={note.url}
+                              className="h-full w-full border-0"
+                            />
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    ))}
                 </div>
               </div>
             </div>
