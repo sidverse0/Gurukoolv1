@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'kgs.nyc3.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };

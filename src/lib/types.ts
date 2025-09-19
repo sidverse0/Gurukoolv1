@@ -11,9 +11,13 @@ export interface Batch {
 }
 
 export interface Video {
+  serial: number;
   title: string;
-  url: string; // YouTube video ID
-  duration: string;
+  published_date: string;
+  video_url: string;
+  hd_video_url: string;
+  thumbnail: string;
+  notes: Note[];
 }
 
 export interface Note {
@@ -29,7 +33,9 @@ export interface Subject {
 }
 
 export interface SubjectDetails {
-  batchId: string;
-  title: string;
-  subjects: Subject[];
+  subject_name: string;
+  subject_id: number;
+  video_count: number;
+  note_count: number;
+  videos: Video[];
 }

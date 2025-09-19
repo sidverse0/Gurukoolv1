@@ -14,15 +14,18 @@ export async function getBatches(): Promise<Batch[]> {
   const enrichedBatches = await Promise.all(
     batches.map(async batch => {
       const details = await getBatchDetails(batch.id);
-      const subjects = details?.subjects || [];
-      const videoCount = subjects.reduce(
-        (acc, subject) => acc + subject.videos.length,
-        0
-      );
-      const noteCount = subjects.reduce(
-        (acc, subject) => acc + subject.notes.length,
-        0
-      );
+      const videoCount = details?.video_count || 0;
+      const noteCount = details?.note_count || 0;
+      const subjects = [
+        {
+          id: details?.subject_id.toString() || batch.id,
+          title: details?.subject_name || batch.title,
+          videos: details?.videos || [],
+          notes:
+            details?.videos.flatMap(v => v.notes).filter(n => n) || [],
+        },
+      ];
+
       return { ...batch, subjects, videoCount, noteCount };
     })
   );
@@ -39,9 +42,11 @@ export async function getBatchDetails(
     const allBatches = await getBatches();
     const currentBatch = allBatches.find(b => b.id === batchId);
     return {
-      batchId,
-      title: currentBatch?.title || 'Unknown Batch',
-      subjects: [],
+      subject_name: currentBatch?.title || 'Unknown Batch',
+      subject_id: 0,
+      video_count: 0,
+      note_count: 0,
+      videos: [],
     };
   }
 
@@ -53,7 +58,16 @@ export async function getBatchDetails(
       );
       return null;
     }
-    return await response.json();
+    const data = await response.json();
+    // The new structure is not an array of subjects, but a single object.
+    // We can adapt it to our previous structure.
+    return {
+      subject_name: data.subject_name,
+      subject_id: data.subject_id,
+      video_count: data.video_count,
+      note_count: data.note_count,
+      videos: data.videos,
+    };
   } catch (error) {
     console.error(`Could not fetch batch details for ${batchId}`, error);
     return null;
