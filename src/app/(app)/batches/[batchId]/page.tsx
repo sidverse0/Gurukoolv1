@@ -36,10 +36,11 @@ function SubjectSkeleton() {
 }
 
 export default function BatchDetailsPage({
-  params: { batchId },
+  params,
 }: {
   params: { batchId: string };
 }) {
+  const { batchId } = params;
   const [batchDetails, setBatchDetails] = useState<BatchDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
