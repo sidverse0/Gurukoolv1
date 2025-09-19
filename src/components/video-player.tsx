@@ -273,22 +273,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}>
           <div className="flex flex-col gap-2 text-white">
-             <div className="flex items-center gap-3">
-              <span className="text-xs font-mono w-12 text-center">{formatDuration(played * duration)}</span>
-              <Slider
-                min={0}
-                max={0.999999}
-                step={0.001}
-                value={[played]}
-                onValueChange={handleSeekChange}
-                onMouseDown={handleSeekMouseDown}
-                onValueChangeCommit={handleSeekMouseUp}
-                className="w-full h-2 group"
-                onClick={e => e.stopPropagation()}
-              />
-              <span className="text-xs font-mono w-12 text-center">{formatDuration(duration)}</span>
-            </div>
-
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
                 <DropdownMenu>
@@ -330,6 +314,22 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 </Button>
               </div>
             </div>
+
+             <div className="flex items-center gap-3">
+              <span className="text-xs font-mono w-12 text-center">{formatDuration(played * duration)}</span>
+              <Slider
+                min={0}
+                max={0.999999}
+                step={0.001}
+                value={[played]}
+                onValueChange={handleSeekChange}
+                onMouseDown={handleSeekMouseDown}
+                onValueChangeCommit={handleSeekMouseUp}
+                className="w-full h-2 group"
+                onClick={e => e.stopPropagation()}
+              />
+              <span className="text-xs font-mono w-12 text-center">{formatDuration(duration)}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -351,5 +351,3 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
-
-    
