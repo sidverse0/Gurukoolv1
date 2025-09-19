@@ -23,21 +23,23 @@ import {
   Volume2,
   VolumeX,
   Settings,
+  RotateCcw,
+  RotateCw,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Slider } from './ui/slider';
 import { cn } from '@/lib/utils';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -73,8 +75,22 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [controlsVisible, setControlsVisible] = useState(true);
-  let controlsTimeout: NodeJS.Timeout;
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const hideControls = () => {
+    if (playing) {
+      setControlsVisible(false);
+    }
+  };
+
+  const showControls = () => {
+    setControlsVisible(true);
+    if (controlsTimeoutRef.current) {
+      clearTimeout(controlsTimeoutRef.current);
+    }
+    controlsTimeoutRef.current = setTimeout(hideControls, 3000);
+  };
+  
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setHasWindow(true);
@@ -96,14 +112,22 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
     return () => {
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      clearTimeout(controlsTimeout);
+      if (controlsTimeoutRef.current) {
+        clearTimeout(controlsTimeoutRef.current);
+      }
     };
   }, []);
+
+  useEffect(() => {
+    showControls();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playing]);
 
   const handleSuggestResolution = async () => {
     setIsLoading(true);
     setSuggestion(null);
     try {
+      // Mock network speed for demonstration
       const networkSpeedMbps = Math.floor(Math.random() * 100) + 1;
       const result = await suggestVideoResolution({ networkSpeedMbps });
       setSuggestion(result);
@@ -117,7 +141,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     }
     setIsLoading(false);
   };
-  
+
   const handlePlayPause = () => setPlaying(!playing);
   
   const handleProgress = (state: OnProgressProps) => {
@@ -132,6 +156,12 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
   const handleSeekMouseUp = (newPlayed: number[]) => {
     setSeeking(false);
     playerRef.current?.seekTo(newPlayed[0]);
+  };
+
+  const handleSeek = (seconds: number) => {
+    const newPlayed = Math.min(Math.max(played + seconds / duration, 0), 1);
+    setPlayed(newPlayed);
+    playerRef.current?.seekTo(newPlayed);
   };
 
   const handleToggleFullscreen = async () => {
@@ -154,23 +184,6 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     }
   };
 
-  const handleMouseMove = () => {
-    setControlsVisible(true);
-    clearTimeout(controlsTimeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    controlsTimeout = setTimeout(() => {
-      if (playing) {
-        setControlsVisible(false);
-      }
-    }, 3000);
-  };
-
-  const handleMouseLeave = () => {
-    if (playing) {
-      setControlsVisible(false);
-    }
-  };
-
   const handleVolumeChange = (newVolume: number[]) => {
     setVolume(newVolume[0]);
     setMuted(newVolume[0] === 0);
@@ -181,8 +194,9 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
       <div
         ref={playerContainerRef}
         className="aspect-video w-full overflow-hidden rounded-lg bg-black relative group/player"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onMouseMove={showControls}
+        onMouseLeave={() => { if (playing) setControlsVisible(false); }}
+        onClick={showControls}
       >
         {hasWindow ? (
           <ReactPlayer
@@ -198,11 +212,11 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
             onDuration={setDuration}
             onPlay={() => setPlaying(true)}
             onPause={() => setPlaying(false)}
-            onClick={handlePlayPause}
             config={{
               file: {
                 attributes: {
                   controlsList: 'nodownload',
+                  onContextMenu: (e: Event) => e.preventDefault(),
                 },
               },
             }}
@@ -211,21 +225,35 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
           <Skeleton className="h-full w-full" />
         )}
         
-        <div className={cn(
-          "absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300",
-          controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}>
-          {/* Main Play/Pause Button in Center */}
-          <div className="absolute inset-0 flex items-center justify-center">
+        <div 
+          className={cn(
+            "absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity duration-300",
+            controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+          )}
+          onClick={e => {
+            if (e.target === e.currentTarget) handlePlayPause();
+          }}
+        >
+           <div className="flex items-center justify-center gap-8 md:gap-16">
+            <Button onClick={() => handleSeek(-10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
+              <RotateCcw className="h-8 w-8" />
+            </Button>
             <Button onClick={handlePlayPause} variant="ghost" size="icon" className="h-20 w-20 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
               {playing ? <Pause className="h-12 w-12" /> : <Play className="h-12 w-12" />}
             </Button>
+             <Button onClick={() => handleSeek(10)} variant="ghost" size="icon" className="h-16 w-16 rounded-full text-white bg-black/30 hover:bg-black/50 hover:text-white">
+              <RotateCw className="h-8 w-8" />
+            </Button>
           </div>
-
-          {/* Bottom Control Bar */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-2 text-white">
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-mono">{formatDuration(played * duration)}</span>
+        </div>
+        
+        <div className={cn(
+          "absolute bottom-0 left-0 right-0 p-3 transition-opacity duration-300 bg-gradient-to-t from-black/60 via-black/30 to-transparent",
+          controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}>
+          <div className="flex flex-col gap-2 text-white">
+             <div className="flex items-center gap-3">
+              <span className="text-xs font-mono w-12 text-center">{formatDuration(played * duration)}</span>
               <Slider
                 min={0}
                 max={0.999999}
@@ -236,7 +264,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                 onValueChangeCommit={handleSeekMouseUp}
                 className="w-full h-2 group"
               />
-              <span className="text-xs font-mono">{formatDuration(duration)}</span>
+              <span className="text-xs font-mono w-12 text-center">{formatDuration(duration)}</span>
             </div>
 
             <div className="flex items-center justify-between">
@@ -247,9 +275,9 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                       <Settings className="h-5 w-5" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-48 bg-black/80 border-white/20 text-white p-2">
+                  <PopoverContent className="w-56 bg-black/80 border-white/20 text-white p-2 mb-2">
                     <div className="space-y-2">
-                      <DropdownMenuLabel className='px-2 py-1.5'>Playback Speed</DropdownMenuLabel>
+                      <p className='px-2 py-1.5 text-sm font-semibold'>Playback Speed</p>
                       <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
                         <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="1">1x (Normal)</DropdownMenuRadioItem>
@@ -265,7 +293,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                            min={0}
                            max={1}
                            step={0.05}
-                           value={[volume]}
+                           value={muted ? [0] : [volume]}
                            onValueChange={handleVolumeChange}
                          />
                        </div>
@@ -301,5 +329,3 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
-
-    
