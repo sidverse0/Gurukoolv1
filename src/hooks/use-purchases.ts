@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -30,7 +31,9 @@ export function usePurchases() {
       (querySnapshot) => {
         const batchIds: string[] = [];
         querySnapshot.forEach((doc) => {
-          batchIds.push(doc.data().batchId);
+          if (!batchIds.includes(doc.data().batchId)) {
+            batchIds.push(doc.data().batchId);
+          }
         });
         setPurchasedBatchIds(batchIds);
         setIsLoaded(true);

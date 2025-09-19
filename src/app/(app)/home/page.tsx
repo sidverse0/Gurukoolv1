@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -155,8 +156,7 @@ export default function HomePage() {
                           asChild
                         >
                           <Link href={`/batches/${batch.id}`}>
-                            <BookOpen className="mr-1.5 h-4 w-4" />
-                            Open
+                            Let's Study <ArrowRight className="ml-1.5" />
                           </Link>
                         </Button>
                       </div>
@@ -180,6 +180,9 @@ export default function HomePage() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   Your purchased batches will appear here.
                 </p>
+                <Button asChild className='mt-6'>
+                  <Link href="/batches">Browse Batches</Link>
+                </Button>
               </CardContent>
             </Card>
           )}

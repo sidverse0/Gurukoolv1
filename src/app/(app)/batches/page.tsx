@@ -47,27 +47,33 @@ export default function BatchesPage() {
       setLoading(true);
       const batches = await getBatches();
       setAllBatches(batches);
-      setFilteredBatches(batches);
       setLoading(false);
     }
     fetchBatches();
   }, []);
 
   useEffect(() => {
+    if (!purchasesLoaded) return;
+
+    // Filter out purchased batches from the main list
+    const availableBatches = allBatches.filter(
+      batch => !purchasedBatchIds.includes(batch.id)
+    );
+
     if (searchTerm === '') {
-      setFilteredBatches(allBatches);
+      setFilteredBatches(availableBatches);
       return;
     }
 
     const lowercasedFilter = searchTerm.toLowerCase();
-    const filtered = allBatches.filter(
+    const filtered = availableBatches.filter(
       batch =>
         batch.title.toLowerCase().includes(lowercasedFilter) ||
         (batch.instructor &&
           batch.instructor.toLowerCase().includes(lowercasedFilter))
     );
     setFilteredBatches(filtered);
-  }, [searchTerm, allBatches]);
+  }, [searchTerm, allBatches, purchasedBatchIds, purchasesLoaded]);
 
   const getImage = (thumbnailId: string) => {
     return PlaceHolderImages.find(img => img.id === thumbnailId);
@@ -107,9 +113,7 @@ export default function BatchesPage() {
           {filteredBatches.map((batch, index) => {
             const image = getImage(batch.thumbnailId);
             const paid = isPaidBatch(batch);
-            const purchased = purchasedBatchIds.includes(batch.id);
-            const showBuyButton = paid && !purchased;
-
+            
             return (
               <Card
                 key={batch.id}
@@ -154,7 +158,7 @@ export default function BatchesPage() {
                   )}
                 </CardContent>
                 <CardFooter>
-                  {showBuyButton ? (
+                  {paid ? (
                      <Button asChild className="w-full">
                         <Link href={`/buy/${batch.id}`}>
                           <Lock className="mr-2" />
@@ -177,10 +181,12 @@ export default function BatchesPage() {
         <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-12 text-center">
           <BookCopy className="h-12 w-12 text-muted-foreground" />
           <h2 className="mt-6 font-headline text-xl font-semibold">
-            No Batches Found
+            {searchTerm ? 'No Batches Found' : 'All Batches Purchased!'}
           </h2>
           <p className="mt-2 text-muted-foreground">
-            Your search for "{searchTerm}" did not match any batches.
+            {searchTerm
+              ? `Your search for "${searchTerm}" did not match any available batches.`
+              : 'You have access to all available batches.'}
           </p>
         </div>
       )}
