@@ -1,4 +1,3 @@
-
 {
   "placeholderImages": [
     {
@@ -48,6 +47,12 @@
       "description": "Thumbnail for UPSC Foundation Batch 2025",
       "imageUrl": "https://picsum.photos/seed/upsc287/600/400",
       "imageHint": "government building"
+    },
+    {
+      "id": "bpsc-prelims-419-thumb",
+      "description": "Thumbnail for 70th BPSC Prelims Revision Batch",
+      "imageUrl": "https://picsum.photos/seed/bpscrevision/600/400",
+      "imageHint": "government exam"
     }
   ]
 }

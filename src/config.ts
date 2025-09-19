@@ -5,7 +5,7 @@ export const BATCHES = [
   },
   {
     id: 'ethics',
-    jsonUrl: 'https://drive.google.com/uc?id=1aPaV8wc6jhq3TjyRZeKxDu72rUqpbDx2',
+    jsonUrl: '', // Will use local file
   },
   {
     id: 'upsc-287',
@@ -13,6 +13,10 @@ export const BATCHES = [
   },
   {
     id: 'bpsc-mentorship-566',
+    jsonUrl: '', // Will use local file
+  },
+  {
+    id: 'bpsc-prelims-419',
     jsonUrl: '', // Will use local file
   },
 ];
