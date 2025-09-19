@@ -1,3 +1,4 @@
+
 import type { Batch, BatchDetails, SubjectLectures, Subject } from '@/lib/types';
 import { BATCHES } from '@/config';
 import UPSC_287_DATA from '@/data/upsc-287.json';
@@ -27,8 +28,8 @@ export async function getBatches(): Promise<Batch[]> {
   const enrichedBatches = await Promise.all(
     batchConfigs.map(async batchConfig => {
       let data;
-      if(batchConfig.id === 'upsc-287'){
-        data = UPSC_287_DATA;
+      if (batchConfig.id === 'upsc-287' && !batchConfig.jsonUrl) {
+         data = UPSC_287_DATA;
       } else if (batchConfig.jsonUrl) {
         data = await fetchJsonData(batchConfig.jsonUrl);
       }
@@ -37,7 +38,7 @@ export async function getBatches(): Promise<Batch[]> {
       
       return {
         id: batchConfig.id,
-        title: data?.batch_info?.title || `Batch ${batchConfig.id}`, // Fetch title dynamically
+        title: data?.batch_info?.title || `Batch ${batchConfig.id}`,
         description: ``,
         instructor: '',
         thumbnailId: `${batchConfig.id}-thumb`,
@@ -58,7 +59,7 @@ export async function getBatchDetails(batchId: string): Promise<BatchDetails | n
     return null;
   }
   
-  if (batchId === 'upsc-287') {
+  if (batchId === 'upsc-287' && !batchConfig.jsonUrl) {
     return UPSC_287_DATA as BatchDetails;
   }
   
@@ -113,3 +114,4 @@ export async function getSubjectLectures(
     videos: [],
   };
 }
+
