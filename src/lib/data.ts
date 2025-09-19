@@ -2,10 +2,12 @@ import type { Batch, BatchDetails, SubjectLectures, Subject } from '@/lib/types'
 import { BATCHES } from '@/config';
 import UPSC_287_DATA from '@/data/upsc-287.json';
 import BPSC_70_DATA from '@/data/bpsc70.json';
+import ETHICS_DATA from '@/data/ethics.json';
 
 const localBatchData: { [key: string]: any } = {
   'upsc-287': UPSC_287_DATA,
   'bpsc70': BPSC_70_DATA,
+  'ethics': ETHICS_DATA,
 };
 
 async function fetchJsonData(url: string): Promise<any> {
@@ -64,7 +66,8 @@ export async function getBatchDetails(batchId: string): Promise<BatchDetails | n
     return null;
   }
   
-  if (!batchConfig.jsonUrl) {
+  // Always try local data first for reliability
+  if (localBatchData[batchId]) {
     return localBatchData[batchId] as BatchDetails;
   }
   
