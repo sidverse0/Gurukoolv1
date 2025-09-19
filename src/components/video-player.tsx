@@ -29,11 +29,10 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -292,14 +291,14 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
-                <Popover>
-                  <PopoverTrigger asChild>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
                     <Button onClick={e => e.stopPropagation()} variant="ghost" size="icon" className="text-white hover:bg-white/20 hover:text-white">
                       <Settings className="h-5 w-5" />
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent onClick={e => e.stopPropagation()} className="w-56 bg-black/80 border-white/20 text-white p-2 mb-2">
-                    <div className="space-y-2">
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent onClick={e => e.stopPropagation()} className="w-56 bg-black/80 border-white/20 text-white p-2 mb-2">
+                    <DropdownMenuGroup>
                       <p className='px-2 py-1.5 text-sm font-semibold'>Playback Speed</p>
                       <DropdownMenuRadioGroup value={playbackRate} onValueChange={setPlaybackRate} className="px-2">
                         <DropdownMenuRadioItem value="0.5">0.5x</DropdownMenuRadioItem>
@@ -307,7 +306,7 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                         <DropdownMenuRadioItem value="1.5">1.5x</DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="2">2x</DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
-                      <DropdownMenuSeparator className='bg-white/20' />
+                      <DropdownMenuSeparator className='bg-white/20 my-2' />
                        <div className='flex items-center gap-2 px-2 py-1.5'>
                          <button onClick={() => setMuted(!muted)}>
                            {muted || volume === 0 ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
@@ -320,9 +319,9 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
                            onValueChange={handleVolumeChange}
                          />
                        </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div className="flex items-center gap-1">
@@ -352,3 +351,5 @@ export function VideoPlayer({ videoUrl }: VideoPlayerProps) {
     </div>
   );
 }
+
+    
