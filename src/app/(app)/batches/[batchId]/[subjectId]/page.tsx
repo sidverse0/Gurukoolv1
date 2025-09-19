@@ -26,6 +26,8 @@ import type { SubjectLectures, Video } from '@/lib/types';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useFavorites } from '@/hooks/use-favorites';
+import { cn } from '@/lib/utils';
 
 function LectureSkeleton() {
   return (
@@ -55,6 +57,8 @@ export default function SubjectLecturesPage() {
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites();
+
 
   useEffect(() => {
     async function fetchData() {
@@ -119,6 +123,14 @@ export default function SubjectLecturesPage() {
     }
     return baseUrl;
   };
+  
+  const handleFavoriteClick = (video: Video) => {
+    if (isFavorite(video)) {
+      removeFavorite(video);
+    } else {
+      addFavorite(video);
+    }
+  };
 
   return (
     <div className="container mx-auto max-w-4xl">
@@ -144,44 +156,52 @@ export default function SubjectLecturesPage() {
       )}
 
       <div className="space-y-4">
-        {filteredVideos.map(video => (
-          <Card key={video.serial} className="overflow-hidden">
-            <div className="grid grid-cols-1 md:grid-cols-3">
-              <div className="relative h-48 md:h-full bg-muted/30 flex items-center justify-center">
-                {video.thumbnail ? (
-                  <Image
-                    src={video.thumbnail}
-                    alt={video.title}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
-                )}
-              </div>
-              <div className="p-4 md:col-span-2">
-                <p className="text-sm text-muted-foreground">
-                  Lecture {video.serial} &bull; {video.published_date}
-                </p>
-                <h3 className="font-headline text-lg font-semibold mt-1">
-                  {video.title}
-                </h3>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button asChild>
-                    <Link href={constructVideoUrl(video)}>
-                      <Play className="mr-2 h-4 w-4" />
-                      Play Video
-                    </Link>
-                  </Button>
-                  <Button variant="ghost">
-                    <Heart className="mr-2 h-4 w-4" />
-                    Add to favorites
-                  </Button>
+        {filteredVideos.map(video => {
+          const favorite = isFavorite(video);
+          return (
+            <Card key={video.serial} className="overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-3">
+                <div className="relative h-48 md:h-full bg-muted/30 flex items-center justify-center">
+                  {video.thumbnail ? (
+                    <Image
+                      src={video.thumbnail}
+                      alt={video.title}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+                  )}
+                </div>
+                <div className="p-4 md:col-span-2">
+                  <p className="text-sm text-muted-foreground">
+                    Lecture {video.serial} &bull; {video.published_date}
+                  </p>
+                  <h3 className="font-headline text-lg font-semibold mt-1">
+                    {video.title}
+                  </h3>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button asChild>
+                      <Link href={constructVideoUrl(video)}>
+                        <Play className="mr-2 h-4 w-4" />
+                        Play Video
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" onClick={() => handleFavoriteClick(video)}>
+                      <Heart
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          favorite && 'fill-red-500 text-red-500'
+                        )}
+                      />
+                      Add to favorites
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          )
+        })}
       </div>
     </div>
   );
