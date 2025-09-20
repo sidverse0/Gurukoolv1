@@ -178,7 +178,7 @@ export default function BatchesPage() {
                   )}
                   <div className="absolute left-2 top-2">
                     {paid ? (
-                      <Badge variant="secondary" className="text-sm">Paid</Badge>
+                      <Badge variant="destructive" className="text-sm">Paid</Badge>
                     ) : (
                       <Badge className="text-sm">Free</Badge>
                     )}

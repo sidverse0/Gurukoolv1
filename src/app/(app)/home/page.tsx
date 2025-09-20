@@ -113,7 +113,7 @@ export default function HomePage() {
     return PlaceHolderImages.find(img => img.id === thumbnailId);
   };
   
-  const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70';
+  const isPaidBatch = (batch: Batch) => batch.id === 'bpsc70' || batch.id === 'ethics';
 
   const isLoading = !favoritesLoaded || !purchasesLoaded || loadingBatches;
 
