@@ -293,7 +293,7 @@ export default function HomePage() {
           <div className="relative h-8 w-8">
             <div className="absolute inset-0 rounded-full bg-primary/50 blur-sm animate-pulse"></div>
             <img
-              src="https://picsum.photos/seed/sid-dev/100"
+              src="https://files.catbox.moe/ckpfrf.png"
               alt="Sid"
               className="relative h-full w-full rounded-full border-2 border-primary"
             />
