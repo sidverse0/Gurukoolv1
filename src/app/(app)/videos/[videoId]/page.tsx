@@ -30,6 +30,7 @@ import {
   DialogFooter,
   DialogClose,
   DialogDescription,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import type { Video } from '@/lib/types';
 import { useAuth } from '@/contexts/auth-context';
@@ -73,10 +74,8 @@ function VideoPlayerContent() {
     setDislikeCount(Math.floor(Math.random() * 20) + 1);
   }, [video?.video_url]);
 
-  // This effect will reset the player's playing state when the video data changes.
-  // This is a workaround to prevent two videos from playing simultaneously when switching quality.
   useEffect(() => {
-    // setPlaying(false); // This will cause the player to pause on quality change
+    // setPlaying(false);
   }, [video?.video_url, quality]);
 
 
@@ -288,7 +287,7 @@ function VideoPlayerContent() {
                 Notes
               </Button>
             )}
-            {video.hd_video_url ? (
+            {video.hd_video_url && video.video_url !== video.hd_video_url ? (
               <Button asChild variant={quality === 'hd' ? 'default' : 'ghost'} className={quality !== 'hd' ? "text-muted-foreground" : ""}>
                 <Link href={constructHdUrl()}>
                   <Clapperboard className="mr-2" />
