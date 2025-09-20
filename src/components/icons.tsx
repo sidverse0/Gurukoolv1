@@ -6,7 +6,7 @@ export const Icons = {
   Logo: (props: SVGProps<SVGSVGElement>) => (
     <div
       className={cn(
-        'relative flex h-8 w-8 items-center justify-center rounded-full',
+        'relative flex h-10 w-10 items-center justify-center rounded-full',
         props.className
       )}
       style={{
@@ -16,8 +16,8 @@ export const Icons = {
       <Image
         src="https://files.catbox.moe/039z22.png"
         alt="GuruKool Logo"
-        width={32}
-        height={32}
+        width={64}
+        height={64}
         className="rounded-full"
       />
     </div>
