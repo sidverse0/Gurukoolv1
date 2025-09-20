@@ -145,7 +145,7 @@ export default function BuyPage() {
         submittedAt: serverTimestamp(),
       });
 
-      const message = `💰 *New Payment Submitted!* 💰\n\n*User:* ${user.displayName || 'N/A'} (${user.email})\n*Batch:* ${batchDetails?.batch_info.title}\n*Batch ID:* ${batchId}\n*Amount:* $${batchPrice}\n*UTR:* ${utr}`;
+      const message = `💰 *New Payment Submitted!* 💰\n\n*User:* ${user.displayName || 'N/A'} (${user.email})\n*Batch:* ${batchDetails?.batch_info.title}\n*Batch ID:* ${batchId}\n*Amount:* ₹${batchPrice}\n*UTR:* ${utr}`;
       await fetch('/api/notify', {
         method: 'POST',
         body: JSON.stringify({ message }),
@@ -233,7 +233,7 @@ export default function BuyPage() {
                     </a>
                   </Button>
                   <p className="mt-4 font-headline text-3xl font-bold text-primary">
-                    ${batchPrice}
+                    ₹{batchPrice}
                   </p>
                 </div>
               </div>
@@ -281,7 +281,7 @@ export default function BuyPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Amount:</span>
-                <span className="font-medium">${batchPrice}</span>
+                <span className="font-medium">₹{batchPrice}</span>
               </div>
                <div className="flex justify-between">
                 <span className="text-muted-foreground">Transaction ID:</span>

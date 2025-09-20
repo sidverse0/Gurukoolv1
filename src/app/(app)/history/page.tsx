@@ -154,7 +154,7 @@ export default function HistoryPage() {
                   <CardHeader className="p-4 pb-2">
                     <div className="flex items-center justify-between">
                        <CardTitle className="text-lg font-bold">{payment.batchId.toUpperCase()}</CardTitle>
-                       <p className="text-lg font-bold">${payment.price}</p>
+                       <p className="text-lg font-bold">₹{payment.price}</p>
                     </div>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">

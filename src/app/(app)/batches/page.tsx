@@ -212,7 +212,7 @@ export default function BatchesPage() {
                      <div className="w-full space-y-4">
                       <div className="flex w-full items-center justify-between">
                           <p className="font-headline text-2xl font-bold text-primary">
-                            ${batchPrice}
+                            ₹{batchPrice}
                           </p>
                           <Button asChild>
                             <Link href={`/buy/${batch.id}`}>
