@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,20 +9,21 @@ import { useAuth } from '@/contexts/auth-context';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
 import { doc, updateDoc } from 'firebase/firestore';
 import { CheckCircle, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 export default function ProfilePage() {
   const { user } = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [displayName, setDisplayName] = useState('');
+  const [dialogState, setDialogState] = useState<{ open: boolean; title: string; description: string; variant: 'success' | 'destructive' }>({ open: false, title: '', description: '', variant: 'success' });
+
 
   useEffect(() => {
     if (user) {
@@ -32,17 +34,20 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      toast({
+      setDialogState({
+        open: true,
         title: 'Logged Out',
         description: 'You have been successfully logged out.',
+        variant: 'success',
       });
       router.push('/login');
     } catch (error) {
       console.error('Logout Error:', error);
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'Logout Failed',
         description: 'Could not log you out. Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -50,10 +55,11 @@ export default function ProfilePage() {
   const handleSave = async () => {
     if (!user) return;
     if (!displayName.trim() || displayName.trim().length < 3) {
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'Invalid Name',
         description: 'Name must be at least 3 characters long.',
+        variant: 'destructive',
       });
       return;
     }
@@ -64,14 +70,15 @@ export default function ProfilePage() {
       const userDocRef = doc(db, 'users', user.uid);
       await updateDoc(userDocRef, { displayName: displayName.trim() });
 
-      toast({ title: 'Profile Updated', description: 'Your name has been updated.' });
+      setDialogState({ open: true, title: 'Profile Updated', description: 'Your name has been updated.', variant: 'success' });
       setIsEditing(false);
     } catch (error) {
       console.error('Profile Update Error:', error);
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'Update Failed',
         description: 'Could not update your name. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsSaving(false);
@@ -88,13 +95,14 @@ export default function ProfilePage() {
       await updateProfile(user, { photoURL: newAvatarUrl });
       const userDocRef = doc(db, 'users', user.uid);
       await updateDoc(userDocRef, { photoURL: newAvatarUrl });
-      toast({ title: 'Avatar Changed!', description: 'Your new avatar is now active.' });
+      setDialogState({ open: true, title: 'Avatar Changed!', description: 'Your new avatar is now active.', variant: 'success' });
     } catch (error) {
       console.error('Avatar Update Error:', error);
-      toast({
-        variant: 'destructive',
+       setDialogState({
+        open: true,
         title: 'Update Failed',
         description: 'Could not update your avatar. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsSaving(false);
@@ -119,6 +127,7 @@ export default function ProfilePage() {
   };
 
   return (
+    <>
     <div className="container mx-auto max-w-2xl">
       <h1 className="mb-8 font-headline text-3xl font-bold tracking-tight md:text-4xl">
         My Profile
@@ -192,5 +201,18 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
     </div>
+    <Dialog open={dialogState.open} onOpenChange={(open) => setDialogState({...dialogState, open})}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="items-center text-center">
+            {dialogState.variant === 'success' ? <CheckCircle className="h-16 w-16 text-green-500" /> : <CheckCircle className="h-16 w-16 text-red-500" />}
+          <DialogTitle className="font-headline text-2xl">{dialogState.title}</DialogTitle>
+          <DialogDescription>
+            {dialogState.description}
+          </DialogDescription>
+        </DialogHeader>
+        <Button onClick={() => setDialogState({ ...dialogState, open: false })}>Okay</Button>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { aiSearch, type AiSearchOutput } from '@/ai/flows/ai-search';
-import { Check, Loader2, Sparkles } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Check, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const examplePrompts = [
   'Explain the theory of relativity',
@@ -21,7 +21,7 @@ export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AiSearchOutput | null>(null);
-  const { toast } = useToast();
+  const [dialogState, setDialogState] = useState<{ open: boolean; title: string; description: string; }>({ open: false, title: '', description: '' });
 
   const handleSearch = async (searchQuery: string) => {
     if (!searchQuery) return;
@@ -32,11 +32,10 @@ export default function SearchPage() {
       setResult(res);
     } catch (error) {
       console.error('AI Search Error:', error);
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'AI Error',
-        description:
-          'Failed to get a response from the AI. Please try again.',
+        description: 'Failed to get a response from the AI. Please try again.',
       });
     }
     setLoading(false);
@@ -48,6 +47,7 @@ export default function SearchPage() {
   };
 
   return (
+    <>
     <div className="container mx-auto max-w-3xl">
       <div className="flex flex-col items-center justify-center text-center">
         <Avatar className="h-24 w-24 border-4 border-primary/50 shadow-lg">
@@ -159,5 +159,18 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+    <Dialog open={dialogState.open} onOpenChange={(open) => setDialogState({...dialogState, open})}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center text-center">
+             <AlertTriangle className="h-16 w-16 text-destructive" />
+            <DialogTitle className="font-headline text-2xl">{dialogState.title}</DialogTitle>
+             <DialogDescription>
+                {dialogState.description}
+            </DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => setDialogState({ ...dialogState, open: false })}>Okay</Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

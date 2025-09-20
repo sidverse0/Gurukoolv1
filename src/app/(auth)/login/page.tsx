@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -16,39 +17,45 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import { Icons } from '@/components/icons';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [dialogState, setDialogState] = useState<{ open: boolean; title: string; description: string; variant: 'success' | 'destructive' }>({ open: false, title: '', description: '', variant: 'success' });
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast({
+      setDialogState({
+        open: true,
         title: 'Logged in successfully!',
-        description: "Welcome back!",
+        description: 'Welcome back!',
+        variant: 'success',
       });
-      router.push('/home');
+      // Redirect after a short delay to allow the user to see the message
+      setTimeout(() => router.push('/home'), 1000);
     } catch (error: any) {
       console.error('Login Error:', error);
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'Login Failed',
         description: error.message || 'Please check your credentials and try again.',
+        variant: 'destructive',
       });
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
+    <>
     <Card className="w-full max-w-sm">
       <form onSubmit={handleLogin}>
         <CardHeader className="text-center">
@@ -70,6 +77,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className="space-y-2">
@@ -80,6 +88,7 @@ export default function LoginPage() {
               required 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
             />
           </div>
         </CardContent>
@@ -96,5 +105,23 @@ export default function LoginPage() {
         </CardFooter>
       </form>
     </Card>
+    <Dialog open={dialogState.open} onOpenChange={(open) => setDialogState({...dialogState, open})}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="items-center text-center">
+           {dialogState.variant === 'success' ? <CheckCircle className="h-16 w-16 text-green-500" /> : <AlertTriangle className="h-16 w-16 text-red-500" />}
+          <DialogTitle className="font-headline text-2xl">{dialogState.title}</DialogTitle>
+          <DialogDescription>
+            {dialogState.description}
+          </DialogDescription>
+        </DialogHeader>
+        <Button onClick={() => {
+            setDialogState({ ...dialogState, open: false });
+            if (dialogState.variant === 'success') {
+                router.push('/home');
+            }
+        }}>Okay</Button>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }

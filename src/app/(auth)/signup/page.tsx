@@ -18,9 +18,10 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
 import { Icons } from '@/components/icons';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+
 
 export default function SignupPage() {
   const router = useRouter();
@@ -28,15 +29,17 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [dialogState, setDialogState] = useState<{ open: boolean; title: string; description: string; variant: 'success' | 'destructive' }>({ open: false, title: '', description: '', variant: 'success' });
+
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim().length < 3) {
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'Invalid Name',
         description: 'Name must be at least 3 characters long.',
+        variant: 'destructive',
       });
       return;
     }
@@ -70,23 +73,27 @@ export default function SignupPage() {
         headers: { 'Content-Type': 'application/json' },
       });
 
-      toast({
+      setDialogState({
+        open: true,
         title: 'Account created!',
         description: "We've created your account for you.",
+        variant: 'success',
       });
-      router.push('/home');
+      setTimeout(() => router.push('/home'), 1000);
     } catch (error: any) {
       console.error('Signup Error:', error);
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'Signup Failed',
         description: error.message || 'Could not create account. Please try again.',
+        variant: 'destructive',
       });
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
+    <>
     <Card className="w-full max-w-sm">
       <form onSubmit={handleSignup}>
         <CardHeader className="text-center">
@@ -108,6 +115,7 @@ export default function SignupPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className="space-y-2">
@@ -119,6 +127,7 @@ export default function SignupPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
           </div>
           <div className="space-y-2">
@@ -130,6 +139,7 @@ export default function SignupPage() {
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
             />
           </div>
         </CardContent>
@@ -146,5 +156,23 @@ export default function SignupPage() {
         </CardFooter>
       </form>
     </Card>
+     <Dialog open={dialogState.open} onOpenChange={(open) => setDialogState({...dialogState, open})}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center text-center">
+            {dialogState.variant === 'success' ? <CheckCircle className="h-16 w-16 text-green-500" /> : <AlertTriangle className="h-16 w-16 text-red-500" />}
+            <DialogTitle className="font-headline text-2xl">{dialogState.title}</DialogTitle>
+            <DialogDescription>
+              {dialogState.description}
+            </DialogDescription>
+          </DialogHeader>
+           <Button onClick={() => {
+            setDialogState({ ...dialogState, open: false });
+            if (dialogState.variant === 'success') {
+                router.push('/home');
+            }
+        }}>Okay</Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

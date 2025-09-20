@@ -18,6 +18,7 @@ import {
   Star,
   FileText,
   Clapperboard,
+  CheckCircle,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
@@ -26,13 +27,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import type { Video } from '@/lib/types';
 import { useAuth } from '@/contexts/auth-context';
-import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 
@@ -41,7 +41,8 @@ function VideoPlayerContent() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
-  const { toast } = useToast();
+  
+  const [dialogState, setDialogState] = useState<{ open: boolean; title: string; description: string; }>({ open: false, title: '', description: '' });
 
   const [liked, setLiked] = useState(false);
   const [disliked, setDisliked] = useState(false);
@@ -71,6 +72,12 @@ function VideoPlayerContent() {
     setLikeCount(Math.floor(Math.random() * 100) + 10);
     setDislikeCount(Math.floor(Math.random() * 20) + 1);
   }, [video?.video_url]);
+
+  // This effect will reset the player's playing state when the video data changes.
+  // This is a workaround to prevent two videos from playing simultaneously when switching quality.
+  useEffect(() => {
+    // setPlaying(false); // This will cause the player to pause on quality change
+  }, [video?.video_url, quality]);
 
 
   if (!video) {
@@ -104,10 +111,7 @@ function VideoPlayerContent() {
     }
     
     if(!wasLiked){
-      toast({
-        title: `👍 Thank you!`,
-        description: `You've liked the video.`,
-      });
+      setDialogState({ open: true, title: `👍 Thank you!`, description: `You've liked the video.` });
   
       const notificationMessage = `👍 *Video Liked!* \n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
       await fetch('/api/notify', {
@@ -131,9 +135,7 @@ function VideoPlayerContent() {
     }
 
     if (!wasDisliked) {
-       toast({
-        title: `👎 Thank you for your feedback!`,
-      });
+       setDialogState({ open: true, title: `👎 Thank you for your feedback!`, description: '' });
 
       const notificationMessage = `👎 *Video Disliked!* \n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
       await fetch('/api/notify', {
@@ -147,10 +149,7 @@ function VideoPlayerContent() {
   const handleRatingSubmit = async () => {
     if (!user || !video || rating === 0) return;
 
-    toast({
-        title: `⭐ Thank you for rating!`,
-        description: `You rated this video ${rating} out of 5.`,
-    });
+    setDialogState({ open: true, title: `⭐ Thank you for rating!`, description: `You rated this video ${rating} out of 5.` });
     
     const notificationMessage = `⭐ *Video Rated! (${rating}/5)* \n\n*User:* ${user.displayName || user.email}\n*Video:* ${video.title}`;
     await fetch('/api/notify', {
@@ -174,6 +173,7 @@ function VideoPlayerContent() {
   };
 
   return (
+    <>
     <div className="container mx-auto max-w-5xl">
       <Button variant="ghost" onClick={() => router.back()} className="mb-4">
         <ArrowLeft className="mr-2 h-4 w-4" />
@@ -289,7 +289,7 @@ function VideoPlayerContent() {
               </Button>
             )}
             {video.hd_video_url ? (
-              <Button asChild variant="ghost" className="text-muted-foreground">
+              <Button asChild variant={quality === 'hd' ? 'default' : 'ghost'} className={quality !== 'hd' ? "text-muted-foreground" : ""}>
                 <Link href={constructHdUrl()}>
                   <Clapperboard className="mr-2" />
                   Watch in HD
@@ -305,6 +305,18 @@ function VideoPlayerContent() {
         </div>
       </div>
     </div>
+     <Dialog open={dialogState.open} onOpenChange={(open) => setDialogState({...dialogState, open})}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center text-center">
+            <DialogTitle className="font-headline text-2xl">{dialogState.title}</DialogTitle>
+             <DialogDescription>
+                {dialogState.description}
+            </DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => setDialogState({ ...dialogState, open: false })}>Okay</Button>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -328,7 +340,3 @@ export default function VideoPage() {
     </Suspense>
   );
 }
-
-    
-
-    

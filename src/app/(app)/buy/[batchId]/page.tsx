@@ -20,12 +20,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, CheckCircle, Loader2, Wallet } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, CheckCircle, Loader2, Wallet, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase';
@@ -65,7 +65,8 @@ export default function BuyPage() {
   const router = useRouter();
   const { user } = useAuth();
   const batchId = params.batchId as string;
-  const { toast } = useToast();
+  
+  const [dialogState, setDialogState] = useState<{ open: boolean; title: string; description: string; }>({ open: false, title: '', description: '' });
 
   const [batchDetails, setBatchDetails] = useState<BatchDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -95,24 +96,24 @@ export default function BuyPage() {
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!utr) {
-      toast({
-        variant: 'destructive',
+      setDialogState({
+        open: true,
         title: 'UTR Number Required',
         description: 'Please enter the UTR number to proceed.',
       });
       return;
     }
     if (utr.length !== 12 || !/^\d{12}$/.test(utr)) {
-      toast({
-        variant: 'destructive',
+       setDialogState({
+        open: true,
         title: 'Invalid UTR Number',
         description: 'Please enter a valid 12-digit UTR number.',
       });
       return;
     }
     if (!user) {
-      toast({
-        variant: 'destructive',
+       setDialogState({
+        open: true,
         title: 'Not Logged In',
         description: 'You must be logged in to make a purchase.',
       });
@@ -147,8 +148,8 @@ export default function BuyPage() {
 
     } catch (error) {
       console.error('Payment Submission Error:', error);
-      toast({
-        variant: 'destructive',
+       setDialogState({
+        open: true,
         title: 'Submission Failed',
         description: 'There was an error submitting your payment. Please try again.',
       });
@@ -279,6 +280,19 @@ export default function BuyPage() {
             </p>
           </div>
           <Button onClick={handleReceiptClose}>Okay</Button>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={dialogState.open} onOpenChange={(open) => setDialogState({...dialogState, open})}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="items-center text-center">
+             <AlertTriangle className="h-16 w-16 text-destructive" />
+            <DialogTitle className="font-headline text-2xl">{dialogState.title}</DialogTitle>
+             <DialogDescription>
+                {dialogState.description}
+            </DialogDescription>
+          </DialogHeader>
+          <Button onClick={() => setDialogState({ ...dialogState, open: false })}>Okay</Button>
         </DialogContent>
       </Dialog>
     </>
