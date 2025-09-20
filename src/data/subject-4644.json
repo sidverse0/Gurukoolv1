@@ -113,7 +113,7 @@
       "notes": [
         {
           "title": "Lecture-08 || Statistics || सांख्यिकी (Part-07)",
-          "url": "https://kgs.nyc3.digitaloceanspaces.com/pdfs/0dfde1d9-cfd9-4458-92f0-1b3c26d32bfe.K JHA SIR 27 12 2024_compressed"
+          "url": "https://kgs.nyc3.digitaloceanspaces.com/pdfs/0dfde1d9-cfd9-4458-92f0-1b3c26d32bfe.pdf"
         }
       ]
     },
@@ -141,7 +141,7 @@
       "notes": [
         {
           "title": "Lecture-10 || Statistics || सांख्यिकी (Part-09)",
-          "url": "https://kgs.nyc3.digitaloceanspaces.com/pdfs/b4141b38-fb64-484c-a0e5-64d3b76e8a20.K JHA SIR 29 12 2024_compressed"
+          "url": "https://kgs.nyc3.digitaloceanspaces.com/pdfs/b4141b38-fb64-484c-a0e5-64d3b76e8a20.pdf"
         }
       ]
     },
@@ -183,7 +183,7 @@
       "notes": [
         {
           "title": "Lecture-13 || Production productivity & Area",
-          "url": "https://kgs.nyc3.digitaloceanspaces.com/pdfs/74032367-3b04-411d-a385-5b4216820a75.K JHA SIR 08 01 2025_"
+          "url": "https://kgs.nyc3.digitaloceanspaces.com/pdfs/74032367-3b04-411d-a385-5b4216820a75.pdf"
         }
       ]
     },
@@ -501,7 +501,7 @@
     },
     {
       "serial": 37,
-      "title": "Lecture-37 || BPSC 67th Mains PYQ's (Part-1)",
+      "title": "Lecture-37 || BPSC 67th (Mains) PYQ's (Part-1)",
       "published_date": "04 Feb 2025",
       "video_url": "https://kgs-v1.akamaized.net/kv3/feb-2025/188703/kgss-1738673803-v188703.m3u8",
       "hd_video_url": "https://www.youtube.com/embed/PowSRF8dmX8",
@@ -530,5 +530,3 @@
   ],
   "notes": []
 }
-
-```
