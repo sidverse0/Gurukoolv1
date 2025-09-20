@@ -184,35 +184,6 @@ export default function SubjectLecturesPage() {
                         Play Video
                       </Link>
                     </Button>
-                    {video.notes && video.notes.length > 0 ? (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline">
-                            <FileText className="mr-2 h-4 w-4" />
-                            Notes
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="h-screen max-h-[95svh] w-screen max-w-[95vw] flex flex-col p-0">
-                           <DialogHeader className="p-4 border-b">
-                              <DialogTitle className="font-headline">
-                                {video.notes[0].title}
-                              </DialogTitle>
-                           </DialogHeader>
-                          <div className="flex-1">
-                            <iframe
-                              src={video.notes[0].url}
-                              className="h-full w-full border-0"
-                              title={video.notes[0].title}
-                            />
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                       <Button variant="outline" disabled>
-                          <FileText className="mr-2 h-4 w-4" />
-                          Notes
-                       </Button>
-                    )}
                     <Button variant="ghost" onClick={(e) => handleFavoriteClick(e, video)}>
                       <Heart
                         className={cn(
