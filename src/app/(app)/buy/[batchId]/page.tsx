@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, notFound, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { getBatchDetails } from '@/lib/data';
@@ -30,6 +30,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/auth-context';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { generateAudio } from '@/ai/flows/generate-audio';
 
 
 function BuyPageSkeleton() {
@@ -74,6 +75,8 @@ export default function BuyPage() {
   const [utr, setUtr] = useState('');
   const [showReceipt, setShowReceipt] = useState(false);
   const [submissionTime, setSubmissionTime] = useState<Date | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   
   const batchPrice = getBatchPrice(batchId);
   const upiLink = batchPrice ? `upi://pay?pa=reyazsiddique2003@okicici&pn=Reyaz%20Siddique&am=${batchPrice}&cu=INR&tn=Batch-${batchId}` : '';
@@ -92,6 +95,12 @@ export default function BuyPage() {
     }
     fetchData();
   }, [batchId]);
+
+  useEffect(() => {
+    if (audioUrl && audioRef.current) {
+      audioRef.current.play().catch(e => console.error("Audio play failed", e));
+    }
+  }, [audioUrl]);
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,7 +133,6 @@ export default function BuyPage() {
     
     try {
       const currentTime = new Date();
-      // Use addDoc to create a new document with a unique ID for each submission
       const paymentsCollectionRef = collection(db, 'payments');
       await addDoc(paymentsCollectionRef, {
         userId: user.uid,
@@ -135,7 +143,6 @@ export default function BuyPage() {
         submittedAt: serverTimestamp(),
       });
 
-      // Send Telegram notification
       const message = `💰 *New Payment Submitted!* 💰\n\n*User:* ${user.displayName || user.email}\n*Batch ID:* ${batchId}\n*Amount:* $${batchPrice}\n*UTR:* ${utr}`;
       await fetch('/api/notify', {
         method: 'POST',
@@ -145,6 +152,13 @@ export default function BuyPage() {
 
       setSubmissionTime(currentTime);
       setShowReceipt(true);
+      
+      // Generate and play audio
+      generateAudio('Payment submitted successfully. Your receipt is now available.').then(response => {
+        setAudioUrl(response.media);
+      }).catch(error => {
+        console.error("Failed to generate audio:", error);
+      });
 
     } catch (error) {
       console.error('Payment Submission Error:', error);
@@ -180,6 +194,7 @@ export default function BuyPage() {
 
   const handleReceiptClose = () => {
     setShowReceipt(false);
+    setAudioUrl(null);
     router.push('/batches');
   }
 
@@ -295,6 +310,10 @@ export default function BuyPage() {
           <Button onClick={() => setDialogState({ ...dialogState, open: false })}>Okay</Button>
         </DialogContent>
       </Dialog>
+
+      {audioUrl && (
+          <audio ref={audioRef} src={audioUrl} hidden />
+      )}
     </>
   );
 }
