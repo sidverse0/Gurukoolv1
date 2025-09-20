@@ -136,6 +136,8 @@ export default function BuyPage() {
       const paymentsCollectionRef = collection(db, 'payments');
       await addDoc(paymentsCollectionRef, {
         userId: user.uid,
+        userDisplayName: user.displayName,
+        userEmail: user.email,
         batchId: batchId,
         utr: utr,
         price: batchPrice,
@@ -143,7 +145,7 @@ export default function BuyPage() {
         submittedAt: serverTimestamp(),
       });
 
-      const message = `💰 *New Payment Submitted!* 💰\n\n*User:* ${user.displayName || user.email}\n*Batch ID:* ${batchId}\n*Amount:* $${batchPrice}\n*UTR:* ${utr}`;
+      const message = `💰 *New Payment Submitted!* 💰\n\n*User:* ${user.displayName || 'N/A'} (${user.email})\n*Batch:* ${batchDetails?.batch_info.title}\n*Batch ID:* ${batchId}\n*Amount:* $${batchPrice}\n*UTR:* ${utr}`;
       await fetch('/api/notify', {
         method: 'POST',
         body: JSON.stringify({ message }),

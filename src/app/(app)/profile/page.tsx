@@ -116,14 +116,7 @@ export default function ProfilePage() {
 
   const formatUid = (uid: string | undefined): string => {
     if (!uid) return '******';
-    let hash = 0;
-    for (let i = 0; i < uid.length; i++) {
-      const char = uid.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash |= 0;
-    }
-    const mixedHash = Math.abs(hash * 27700159);
-    return mixedHash.toString(36).slice(0, 6).toUpperCase().padStart(6, '0');
+    return uid.substring(0, 6).toUpperCase().padStart(6, '0');
   };
 
   return (
