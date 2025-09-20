@@ -89,10 +89,17 @@ export default function HomePage() {
   const [currentQuote, setCurrentQuote] = useState(quotes[0]);
 
   useEffect(() => {
+    const getQuoteOfTheDay = () => {
+      const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+      const quoteIndex = dayOfYear % quotes.length;
+      setCurrentQuote(quotes[quoteIndex]);
+    }
+    
+    getQuoteOfTheDay(); // Set initial quote
+    
     const quoteInterval = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      setCurrentQuote(quotes[randomIndex]);
-    }, 10 * 60 * 1000); // 10 minutes
+      getQuoteOfTheDay();
+    }, 24 * 60 * 60 * 1000); // 24 hours
 
     return () => clearInterval(quoteInterval);
   }, []);
