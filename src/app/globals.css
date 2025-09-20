@@ -63,4 +63,35 @@
   }
 }
 
+@layer components {
+  .vip-avatar-frame {
+    position: relative;
+    padding: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(45deg, #ffd700, #f7b733, #fc4a1a, #f7b733, #ffd700);
+    background-size: 400% 400%;
+    animation: gradient-animation 5s ease infinite;
+  }
+
+  .vip-avatar-frame::before {
+    content: '👑';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+
+  @keyframes gradient-animation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .vip-avatar-frame .h-24.w-24 {
+    border-color: hsl(var(--background)) !important;
+  }
+}
+
     

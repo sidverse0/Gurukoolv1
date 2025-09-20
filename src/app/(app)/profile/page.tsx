@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { CheckCircle, Loader2, LogOut, KeyRound, Trash2, Moon, Sun, AlertTriangle, User, Settings, GraduationCap, Heart } from 'lucide-react';
+import { CheckCircle, Loader2, LogOut, KeyRound, Trash2, Moon, Sun, AlertTriangle, User, Settings, GraduationCap, Heart, ShieldCheck } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -30,6 +30,7 @@ import { useTheme } from '@/contexts/theme-provider';
 import { useFavorites } from '@/hooks/use-favorites';
 import { usePurchases } from '@/hooks/use-purchases';
 import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -171,14 +172,19 @@ export default function ProfilePage() {
     <>
     <div className="container mx-auto max-w-4xl">
        <div className="mb-8 flex items-center gap-4">
-        <Avatar className="h-24 w-24 border-4 border-primary/20">
-          <AvatarImage src={user?.photoURL || ''} data-ai-hint="person face" />
-          <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
-        </Avatar>
+        <div className="relative vip-avatar-frame">
+          <Avatar className="h-24 w-24 border-4 border-transparent">
+            <AvatarImage src={user?.photoURL || ''} data-ai-hint="person face" />
+            <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+          </Avatar>
+        </div>
         <div>
-          <h1 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
-            {user?.displayName || 'Guest User'}
-          </h1>
+          <div className="flex items-center gap-2">
+             <h1 className="font-headline text-3xl font-bold tracking-tight md:text-4xl">
+              {user?.displayName || 'Guest User'}
+            </h1>
+            <ShieldCheck className="h-7 w-7 text-green-500" />
+          </div>
           <p className="text-muted-foreground">{user?.email}</p>
         </div>
       </div>
@@ -236,13 +242,9 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="account">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account & Security</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-               <div className="flex items-center justify-between rounded-lg border p-4">
+        <TabsContent value="account" className="mt-4">
+            <div className="space-y-6">
+               <div className="flex items-center justify-between rounded-lg border bg-card p-4">
                 <div>
                   <h3 className="font-medium">Dark Mode</h3>
                   <p className="text-sm text-muted-foreground">
@@ -256,7 +258,7 @@ export default function ProfilePage() {
                 />
               </div>
 
-               <div className="flex items-center justify-between rounded-lg border p-4">
+               <div className="flex items-center justify-between rounded-lg border bg-card p-4">
                 <div>
                   <h3 className="font-medium">Password</h3>
                   <p className="text-sm text-muted-foreground">
@@ -327,8 +329,7 @@ export default function ProfilePage() {
                   </AlertDialogContent>
                 </AlertDialog>
               </div>
-            </CardContent>
-          </Card>
+            </div>
         </TabsContent>
       </Tabs>
     </div>
@@ -347,3 +348,5 @@ export default function ProfilePage() {
     </>
   );
 }
+
+    
