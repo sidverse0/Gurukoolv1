@@ -18,7 +18,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 h-16 rounded-t-3xl border-t border-border/50 bg-background/90 backdrop-blur-lg md:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.05)] pb-4">
+    <div className="fixed bottom-0 left-0 right-0 z-40 h-16 rounded-t-3xl border-t border-border/50 bg-background/90 backdrop-blur-lg md:hidden shadow-[0_-4px_16px_rgba(0,0,0,0.05)] pb-8">
       <div className="grid h-full grid-cols-5">
         {links.map(link => {
           const isActive = pathname.startsWith(link.href);
