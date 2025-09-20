@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { CheckCircle, Loader2, LogOut, KeyRound, Trash2, Moon, Sun, AlertTriangle, User, Settings, GraduationCap } from 'lucide-react';
+import { CheckCircle, Loader2, LogOut, KeyRound, Trash2, Moon, Sun, AlertTriangle, User, Settings, GraduationCap, Heart } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -347,5 +347,3 @@ export default function ProfilePage() {
     </>
   );
 }
-
-    
